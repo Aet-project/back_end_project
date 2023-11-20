@@ -7,15 +7,13 @@ import com.example.gymbo_back_end.core.entity.Member;
 import com.example.gymbo_back_end.jwt.TokenInfo;
 import com.example.gymbo_back_end.member.dto.MemberLoginRequestDto;
 import com.example.gymbo_back_end.member.dto.RequestMemberJoinDto;
+import com.example.gymbo_back_end.member.dto.ResponseMemberInfoDto;
 import com.example.gymbo_back_end.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -49,6 +47,12 @@ public class MemberController {
         String password = memberLoginRequestDto.getPassword();
         TokenInfo tokenInfo = memberService.login(memberId, password).orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
         return Optional.ofNullable(tokenInfo);
+    }
+
+    @GetMapping("/{memberId}")
+    public ResponseEntity<ResBodyModel> read (@PathVariable String memberId) {
+        ResponseMemberInfoDto responseMemberInfoDto = memberService.find(memberId);
+       return AetResponse.toResponse(SuccessCode.SUCCESS,responseMemberInfoDto);
     }
 
     @PostMapping("/test")

@@ -3,7 +3,8 @@ package com.example.gymbo_back_end.member.service;
 import com.example.gymbo_back_end.core.entity.Member;
 import com.example.gymbo_back_end.jwt.JwtTokenProvider;
 import com.example.gymbo_back_end.jwt.TokenInfo;
-import com.example.gymbo_back_end.member.dto.RequestMemberJoinDto;
+import com.example.gymbo_back_end.member.dao.JpaMemberDao;
+import com.example.gymbo_back_end.member.dto.ResponseMemberInfoDto;
 import com.example.gymbo_back_end.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -25,7 +27,7 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService{
 
     private final BCryptPasswordEncoder encoder;
-    private final MemberRepository memberRepository;
+    private final JpaMemberDao jpaMemberDao;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -40,16 +42,17 @@ public class MemberServiceImpl implements MemberService{
                 .nickName(member.getNickName())
                 .roles(Collections.singletonList("USER"))
                 .build();
-      return memberRepository.save(saveMember);
+      return jpaMemberDao.save(saveMember);
     }
 
     @Transactional
     public Optional<TokenInfo> login(String memberId, String password) {
 
-        Member member = memberRepository.findByMemberId(memberId).orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
+        Member member = jpaMemberDao.findByMemberId(memberId).orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
 
 
-        if (encoder.matches(password,member.getPassword())==true) {
+        if (encoder.matches(password,member.getPassword())==true) { //비밀번호가 암호화된 비민번호와 일치한지 확인
+
             // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
             // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(memberId, member.getPassword());
@@ -65,5 +68,16 @@ public class MemberServiceImpl implements MemberService{
         } else {
             return null;
         }
+    }
+
+    @Override
+    public ResponseMemberInfoDto find(String memberId) {
+        Member member = jpaMemberDao.findByMemberId(memberId).orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
+        ResponseMemberInfoDto responseMemberInfoDto = ResponseMemberInfoDto.builder()
+                .memberId(member.getMemberId())
+                .nickName(member.getNickName())
+                .build();
+
+        return responseMemberInfoDto;
     }
 }

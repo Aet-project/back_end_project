@@ -1,9 +1,12 @@
 package com.example.gymbo_back_end.member.dao;
 
 import com.example.gymbo_back_end.core.entity.Member;
-import com.example.gymbo_back_end.member.dto.RequestMemberJoinDto;
+
+import java.util.Optional;
 
 public interface MemberDao {
 
-    void saveUser(Member member);
+    Member save(Member member);
+
+    Optional<Member> findByMemberId(String memberId);
 }
