@@ -5,6 +5,7 @@ import com.example.gymbo_back_end.jwt.TokenInfo;
 import com.example.gymbo_back_end.member.dto.RequestMemberJoinDto;
 import com.example.gymbo_back_end.member.dto.ResponseMemberInfoDto;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MemberService {
@@ -14,5 +15,7 @@ public interface MemberService {
     Optional<TokenInfo> login(String memberId, String password);
 
     ResponseMemberInfoDto find(String userEmail);
+
+    List<ResponseMemberInfoDto> findAll();
 
 }

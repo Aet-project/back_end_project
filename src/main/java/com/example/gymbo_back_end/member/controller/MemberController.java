@@ -15,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -54,6 +56,15 @@ public class MemberController {
         ResponseMemberInfoDto responseMemberInfoDto = memberService.find(memberId);
        return AetResponse.toResponse(SuccessCode.SUCCESS,responseMemberInfoDto);
     }
+
+    @GetMapping()
+    public ResponseEntity<ResBodyModel> readAll() {
+        List<ResponseMemberInfoDto> members = memberService.findAll();
+
+        return AetResponse.toResponse(SuccessCode.SUCCESS,members);
+
+    }
+
 
     @PostMapping("/test")
     public String test() {
