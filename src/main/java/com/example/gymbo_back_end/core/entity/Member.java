@@ -8,7 +8,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -25,7 +24,8 @@ import java.util.stream.Collectors;
 public class Member implements UserDetails {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "member_seq")
+    private Long memberSeq;
 
     @Column(name = "member_id")
     private String memberId;

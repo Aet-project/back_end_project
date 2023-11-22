@@ -12,7 +12,6 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "gym")
@@ -38,5 +37,11 @@ public class Gym {
     @Column(name = "gym_created_at")
     protected Date createdAt;
 
-
+    @Builder
+    public Gym(Long gymSeq, String gymName, Address gymAddress, String gymNumber) {
+        this.gymSeq = gymSeq;
+        this.gymName = gymName;
+        this.gymAddress = gymAddress;
+        this.gymNumber = gymNumber;
+    }
 }
