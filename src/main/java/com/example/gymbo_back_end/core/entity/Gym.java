@@ -29,8 +29,11 @@ public class Gym {
     @Embedded
     private Address gymAddress;
 
-    @Column(name = "gym_number")
+    @Column(name = "gym_number") //사업자번호
     private String gymNumber;
+
+    @Column(name = "gym_manager_number")
+    private String managerNumber;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -38,10 +41,11 @@ public class Gym {
     protected Date createdAt;
 
     @Builder
-    public Gym(Long gymSeq, String gymName, Address gymAddress, String gymNumber) {
+    public Gym(Long gymSeq, String gymName, Address gymAddress, String gymNumber, String managerNumber) {
         this.gymSeq = gymSeq;
         this.gymName = gymName;
         this.gymAddress = gymAddress;
         this.gymNumber = gymNumber;
+        this.managerNumber = managerNumber;
     }
 }

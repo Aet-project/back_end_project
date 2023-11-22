@@ -31,6 +31,8 @@ public class SecurityConfig {
                 .antMatchers("/members/join").permitAll()
                 .antMatchers("/members/login").permitAll()
                 .antMatchers("/members/**").permitAll()
+                .antMatchers("/orders/**").permitAll()
+                .antMatchers("/gyms/**").permitAll()
                 .antMatchers("/members/test").hasRole("USER")
                 .anyRequest().authenticated()
                 .and()
