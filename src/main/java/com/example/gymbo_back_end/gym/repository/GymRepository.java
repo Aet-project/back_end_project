@@ -10,5 +10,5 @@ public interface GymRepository extends JpaRepository<Gym,Long> {
 
     Optional<Gym> findByGymName(String gymName);
 
-    Optional<Gym> findByManagerNumber(String managerNumber);
+    Optional<Gym> findByGymNumber (String gymNumber);
 }

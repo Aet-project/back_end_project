@@ -63,5 +63,11 @@ public class GymController {
         return AetResponse.toResponse(SuccessCode.SUCCESS,gymResponseDtoList);
     }
 
+    @PatchMapping
+    private ResponseEntity<ResBodyModel> updateGym(@RequestBody GymSaveRequestDto gymSaveRequestDto) {
+        GymResponseDto updateGymResponseDto = gymService.update(gymSaveRequestDto);
+        return AetResponse.toResponse(SuccessCode.SUCCESS,updateGymResponseDto);
+
+    }
 
 }

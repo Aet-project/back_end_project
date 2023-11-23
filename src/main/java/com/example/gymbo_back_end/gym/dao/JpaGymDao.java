@@ -27,8 +27,8 @@ public class JpaGymDao implements GymDao{
     }
 
     @Override
-    public Optional<Gym> findByManagerNumber(String managerNumber) {
-        return gymRepository.findByManagerNumber(managerNumber);
+    public Optional<Gym> findByGymNumber(String gymNumber) {
+        return gymRepository.findByGymNumber(gymNumber);
     }
 
     @Override

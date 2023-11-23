@@ -2,13 +2,16 @@ package com.example.gymbo_back_end.gym.service;
 
 import com.example.gymbo_back_end.core.commom.response.Address;
 import com.example.gymbo_back_end.core.entity.Gym;
+import com.example.gymbo_back_end.gym.controller.GymController;
 import com.example.gymbo_back_end.gym.dao.GymDao;
 import com.example.gymbo_back_end.gym.dto.GymResponseDto;
+import com.example.gymbo_back_end.gym.dto.GymSaveRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,5 +47,15 @@ public class GymServiceImpl implements GymService {
             gymResponseDtoList.add(gymResponseDto);
         }
         return gymResponseDtoList;
+    }
+
+    @Override
+    public GymResponseDto update(GymSaveRequestDto gymSaveRequestDto) {
+        Gym gym = gymDao.findByGymNumber(gymSaveRequestDto.getGymNumber()).orElseThrow(() -> new EntityNotFoundException("등록된 운동시설이 없습ㄴ디ㅏ."));
+        gym.changeInfo(gymSaveRequestDto);
+
+        GymResponseDto gymResponseDto = GymResponseDto.buildDto(gym);
+
+        return gymResponseDto;
     }
 }

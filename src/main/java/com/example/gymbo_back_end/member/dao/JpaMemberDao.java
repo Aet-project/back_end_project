@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,5 +41,11 @@ public class JpaMemberDao implements MemberDao{
             responseMemberInfoDtos.add(ResponseMemberInfoDto.buildDto(member));
         }
         return responseMemberInfoDtos;
+    }
+
+    @Override
+    public void delete(String memberId) {
+        Member member = memberRepository.findByMemberId(memberId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
+        memberRepository.delete(member);
     }
 }

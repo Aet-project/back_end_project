@@ -11,7 +11,7 @@ public interface GymDao {
 
     Optional<Gym> findByGymName(String gymName);
 
-    Optional<Gym> findByManagerNumber(String managerNumber);
+    Optional<Gym> findByGymNumber(String gymNumber);
 
     List<Gym> findAll();
 }

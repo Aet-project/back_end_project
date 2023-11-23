@@ -2,6 +2,7 @@ package com.example.gymbo_back_end.core.entity;
 
 
 import com.example.gymbo_back_end.core.commom.response.Address;
+import com.example.gymbo_back_end.gym.dto.GymSaveRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,11 +42,21 @@ public class Gym {
     protected Date createdAt;
 
     @Builder
-    public Gym(Long gymSeq, String gymName, Address gymAddress, String gymNumber, String managerNumber) {
-        this.gymSeq = gymSeq;
+    public Gym( String gymName, Address gymAddress, String gymNumber, String managerNumber) {
         this.gymName = gymName;
         this.gymAddress = gymAddress;
         this.gymNumber = gymNumber;
         this.managerNumber = managerNumber;
+    }
+
+    public void changeInfo (GymSaveRequestDto gymSaveRequestDto) {
+        Address address = new Address(gymSaveRequestDto.getCity()
+                ,gymSaveRequestDto.getStreet()
+                ,gymSaveRequestDto.getZipCode());
+
+        this.gymName = gymSaveRequestDto.getGymName();
+        this.managerNumber = gymSaveRequestDto.getManagerNumber();
+        this.gymAddress = address;
+        this.gymNumber = gymSaveRequestDto.getGymNumber();
     }
 }
