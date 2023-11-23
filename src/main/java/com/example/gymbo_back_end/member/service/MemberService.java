@@ -18,4 +18,8 @@ public interface MemberService {
 
     List<ResponseMemberInfoDto> findAll();
 
+    ResponseMemberInfoDto update(RequestMemberJoinDto requestMemberJoinDto);
+
+    void delete(String memberId);
+
 }

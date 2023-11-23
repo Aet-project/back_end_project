@@ -13,4 +13,6 @@ public interface MemberDao {
     Optional<Member> findByMemberId(String memberId);
 
     List<ResponseMemberInfoDto> findAll();
+
+    void delete(String memberId) ;
 }

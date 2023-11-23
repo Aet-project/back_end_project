@@ -4,6 +4,7 @@ import com.example.gymbo_back_end.core.entity.Member;
 import com.example.gymbo_back_end.jwt.JwtTokenProvider;
 import com.example.gymbo_back_end.jwt.TokenInfo;
 import com.example.gymbo_back_end.member.dao.JpaMemberDao;
+import com.example.gymbo_back_end.member.dto.RequestMemberJoinDto;
 import com.example.gymbo_back_end.member.dto.ResponseMemberInfoDto;
 import com.example.gymbo_back_end.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -85,5 +86,18 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public List<ResponseMemberInfoDto> findAll() {
         return jpaMemberDao.findAll();
+    }
+
+    @Override
+    public ResponseMemberInfoDto update( RequestMemberJoinDto requestMemberJoinDto) {
+        Member member = jpaMemberDao.findByMemberId(requestMemberJoinDto.getMemberId())
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 회원입니다."));
+        member.changeInfo(requestMemberJoinDto);
+       return ResponseMemberInfoDto.buildDto(member);
+    }
+
+    @Override
+    public void delete(String memberId) {
+        jpaMemberDao.delete(memberId);
     }
 }

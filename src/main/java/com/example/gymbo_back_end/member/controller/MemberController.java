@@ -65,6 +65,19 @@ public class MemberController {
 
     }
 
+    @PatchMapping()
+    public ResponseEntity<ResBodyModel> update( @RequestBody RequestMemberJoinDto requestMemberJoinDto) {
+        ResponseMemberInfoDto updateMember = memberService.update( requestMemberJoinDto);
+
+        return AetResponse.toResponse(SuccessCode.SUCCESS,updateMember);
+    }
+
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<ResBodyModel> delete(@PathVariable String memberId) {
+        memberService.delete(memberId);
+        return AetResponse.toResponse(SuccessCode.SUCCESS);
+    }
+
 
     @PostMapping("/test")
     public String test() {
