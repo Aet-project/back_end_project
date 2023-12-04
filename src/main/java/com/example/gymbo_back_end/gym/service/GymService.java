@@ -13,6 +13,8 @@ public interface GymService {
 
     GymResponseDto find(String gymName);
 
+    Gym find(Long gymSeq);
+
     List<GymResponseDto> findAll();
 
     GymResponseDto update(GymSaveRequestDto gymSaveRequestDto);

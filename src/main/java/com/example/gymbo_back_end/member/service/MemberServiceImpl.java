@@ -30,6 +30,7 @@ public class MemberServiceImpl implements MemberService{
 
     private final BCryptPasswordEncoder encoder;
     private final JpaMemberDao jpaMemberDao;
+    private final MemberRepository memberRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -81,6 +82,11 @@ public class MemberServiceImpl implements MemberService{
                 .build();
 
         return responseMemberInfoDto;
+    }
+
+    @Override
+    public Member find(Long memberSeq) {
+        return jpaMemberDao.find(memberSeq);
     }
 
     @Override

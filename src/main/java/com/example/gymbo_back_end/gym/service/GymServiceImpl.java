@@ -1,8 +1,6 @@
 package com.example.gymbo_back_end.gym.service;
 
-import com.example.gymbo_back_end.core.commom.response.Address;
 import com.example.gymbo_back_end.core.entity.Gym;
-import com.example.gymbo_back_end.gym.controller.GymController;
 import com.example.gymbo_back_end.gym.dao.GymDao;
 import com.example.gymbo_back_end.gym.dto.GymResponseDto;
 import com.example.gymbo_back_end.gym.dto.GymSaveRequestDto;
@@ -34,6 +32,11 @@ public class GymServiceImpl implements GymService {
         Gym findGym = gymDao.findByGymName(gymName).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 운동시설 입니다."));
         GymResponseDto gymResponseDto = GymResponseDto.buildDto(findGym);
         return gymResponseDto;
+    }
+
+    @Override
+    public Gym find(Long gymSeq) {
+       return gymDao.find(gymSeq);
     }
 
     @Override

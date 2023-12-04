@@ -14,4 +14,6 @@ public interface GymDao {
     Optional<Gym> findByGymNumber(String gymNumber);
 
     List<Gym> findAll();
+
+    Gym find(Long gymSeq);
 }

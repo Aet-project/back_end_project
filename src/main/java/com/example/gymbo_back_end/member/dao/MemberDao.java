@@ -15,4 +15,6 @@ public interface MemberDao {
     List<ResponseMemberInfoDto> findAll();
 
     void delete(String memberId) ;
+
+    Member find(Long memberSeq);
 }

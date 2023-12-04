@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,5 +37,11 @@ public class JpaGymDao implements GymDao{
 
         List<Gym> gyms = gymRepository.findAll();
         return gyms;
+    }
+
+    @Override
+    public Gym find(Long gymSeq) {
+        Gym gym = gymRepository.findById(gymSeq).orElseThrow(() -> new EntityNotFoundException("운동시설을 찾을 수 없습니다."));
+        return gym;
     }
 }

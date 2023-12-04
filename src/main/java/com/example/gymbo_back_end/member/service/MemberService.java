@@ -16,6 +16,8 @@ public interface MemberService {
 
     ResponseMemberInfoDto find(String userEmail);
 
+    Member find(Long memberSeq);
+
     List<ResponseMemberInfoDto> findAll();
 
     ResponseMemberInfoDto update(RequestMemberJoinDto requestMemberJoinDto);
