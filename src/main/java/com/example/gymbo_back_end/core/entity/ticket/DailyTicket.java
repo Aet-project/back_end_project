@@ -1,5 +1,6 @@
-package com.example.gymbo_back_end.core.entity;
+package com.example.gymbo_back_end.core.entity.ticket;
 
+import com.example.gymbo_back_end.core.entity.Gym;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
