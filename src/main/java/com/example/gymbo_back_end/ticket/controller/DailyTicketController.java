@@ -3,7 +3,7 @@ package com.example.gymbo_back_end.ticket.controller;
 import com.example.gymbo_back_end.core.commom.code.SuccessCode;
 import com.example.gymbo_back_end.core.commom.response.AetResponse;
 import com.example.gymbo_back_end.core.commom.response.model.ResBodyModel;
-import com.example.gymbo_back_end.core.entity.ticket.DailyTicket;
+import com.example.gymbo_back_end.core.entity.DailyTicket;
 import com.example.gymbo_back_end.ticket.dto.DailyTicketRequestDto;
 import com.example.gymbo_back_end.ticket.service.DailyTicketService;
 

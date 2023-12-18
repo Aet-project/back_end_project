@@ -5,6 +5,7 @@ import com.example.gymbo_back_end.member.dto.ResponseMemberInfoDto;
 import com.example.gymbo_back_end.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityNotFoundException;

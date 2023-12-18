@@ -1,6 +1,6 @@
 package com.example.gymbo_back_end.ticket.dao;
 
-import com.example.gymbo_back_end.core.entity.ticket.DailyTicket;
+import com.example.gymbo_back_end.core.entity.DailyTicket;
 import com.example.gymbo_back_end.ticket.repository.DailyTicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

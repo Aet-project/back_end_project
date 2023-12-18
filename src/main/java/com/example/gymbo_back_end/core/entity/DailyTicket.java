@@ -1,19 +1,16 @@
-package com.example.gymbo_back_end.core.entity.ticket;
+package com.example.gymbo_back_end.core.entity;
 
 import com.example.gymbo_back_end.core.entity.Gym;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "daily_ticket")
 @Entity
 public class DailyTicket {
@@ -32,11 +29,15 @@ public class DailyTicket {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "gym_created_at")
-    protected Date createdAt;
+    private Date createdAt;
 
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "gym_seq")
     private Gym gym;
+
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name = "reservation_seq")
+    private Reservation reservation;
 
 
 
