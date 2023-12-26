@@ -46,7 +46,9 @@ public class DailyTicketServiceImpl implements DailyTicketService{
 
         for (int i = 0; i < orderRequestDto.getOrderCount(); i++) {
             Gym gym = gymDao.findByGymName(orderRequestDto.getGymName()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 운동시설 입니다."));
-            Reservation reservation = Reservation.createdReservation(orderRequestDto.getStartTime(),orderRequestDto.getEndTime());
+            Reservation reservation = Reservation.createdReservation(orderRequestDto.getStartTime(),
+                    orderRequestDto.getEndTime(),
+                    orderRequestDto.getStartDay());
 
             DailyTicket dailyTicket = DailyTicket.builder()
                     .reservation(reservation)

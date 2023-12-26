@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @NoArgsConstructor
@@ -19,15 +21,25 @@ public class Reservation {
     @Column(name = "reservation_seq")
     private Long reservationSeq;
 
+    @Column(name = "start_day")
+    private String startDay;
+
     @Column(name = "start_time")
     private String startTime;
 
     @Column(name = "end_time")
     private String endTime;
 
-    public static Reservation createdReservation(String startTime, String endTime) {
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "reservation_date")
+    private Date reservationDate;                // 예약 생성 날짜
+
+
+    public static Reservation createdReservation(String startTime, String endTime,String startDay) {
 
         Reservation reservation = Reservation.builder()
+                .startDay(startDay)
                 .startTime(startTime)
                 .endTime(endTime).build();
         return reservation;

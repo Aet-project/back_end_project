@@ -28,7 +28,7 @@ public class Order {
     @JoinColumn(name = "member_seq")
     private Member member; //주문 회원
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<OrderItem> orderItems = new ArrayList<>();
 

@@ -27,6 +27,4 @@ public class DailyTicketController {
         return AetResponse.toResponse(SuccessCode.SUCCESS,dailyTicket);
     }
 
-
-
 }

@@ -5,6 +5,7 @@ import com.example.gymbo_back_end.core.entity.DailyTicket;
 import com.example.gymbo_back_end.gym.dao.GymDao;
 import com.example.gymbo_back_end.member.dao.MemberDao;
 import com.example.gymbo_back_end.order.dao.OrderDao;
+import com.example.gymbo_back_end.order.dto.OrderFindOneResponseDto;
 import com.example.gymbo_back_end.order.dto.OrderRequestDto;
 import com.example.gymbo_back_end.order.dto.OrderResponseDto;
 import com.example.gymbo_back_end.order.repository.OrderRepository;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,9 +27,9 @@ public class OrderServiceImpl implements OrderService{
 
     private final TicketDao ticketDao;
     private final MemberDao memberDao;
-    private final GymDao gymDao;
     private final OrderDao orderDao;
     private final OrderRepository orderRepository;
+
 
 
     @Override
@@ -51,8 +53,26 @@ public class OrderServiceImpl implements OrderService{
                 .nickName(saveOrder.getMember().getNickName())
                 .startTime(ticket.getReservation().getStartTime())
                 .endTime(ticket.getReservation().getEndTime())
+                .startDay(ticket.getReservation().getStartDay())
                 .build();
 
         return orderResponseDto;
     }
+
+    @Override
+    public OrderFindOneResponseDto findOne(Long orderSeq) {
+        Order order = orderDao.findOne(orderSeq);
+        OrderFindOneResponseDto orderFindOneResponseDto = OrderFindOneResponseDto.createdOrderDto(order);
+
+        return orderFindOneResponseDto;
+    }
+
+    @Override
+    public List<Order> memberFindOrders(Long memberSeq) {
+        Member member = memberDao.find(memberSeq);
+        List<Order> ordersByMember = orderDao.findOrdersByMember(member);
+        return ordersByMember;
+    }
+
+
 }
