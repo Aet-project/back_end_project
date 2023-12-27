@@ -1,5 +1,6 @@
 package com.example.gymbo_back_end.order.service;
 
+import com.example.gymbo_back_end.core.entity.DailyTicket;
 import com.example.gymbo_back_end.core.entity.Order;
 import com.example.gymbo_back_end.order.dto.OrderFindOneResponseDto;
 import com.example.gymbo_back_end.order.dto.OrderRequestDto;
@@ -11,9 +12,9 @@ import java.util.List;
 public interface OrderService {
 
 
-    OrderResponseDto save(OrderRequestDto orderRequestDto, DailyTicketDto dailyTicketDto);
+    OrderResponseDto save(OrderRequestDto orderRequestDto, List<DailyTicketDto> dailyTicketList);
 
-    OrderFindOneResponseDto findOne(Long orderSeq);
+    OrderFindOneResponseDto OrderFindMember(Long orderSeq);
 
 
     List<Order> memberFindOrders(Long memberSeq);

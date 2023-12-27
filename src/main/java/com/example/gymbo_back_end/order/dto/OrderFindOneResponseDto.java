@@ -20,12 +20,15 @@ public class OrderFindOneResponseDto {
 //    private List<OrderItem> orderItems = new ArrayList<>();
 
 //    public void addOrderItem(OrderItem orderItem) {
-//        orderItems.add(orderItem);
+//       orderItems.add(orderItem);
 //    }
     public static OrderFindOneResponseDto createdOrderDto(Order order){
         OrderFindOneResponseDto orderFindOneResponseDto = new OrderFindOneResponseDto();
         orderFindOneResponseDto.setMemberSeq(order.getMember().getMemberSeq());
         orderFindOneResponseDto.setOrderSeq(order.getOrderSeq());
+//        for (OrderItem item : order.getOrderItems()) {
+//            orderFindOneResponseDto.addOrderItem(item);
+//        }
 
         return orderFindOneResponseDto;
     }

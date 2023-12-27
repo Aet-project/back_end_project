@@ -23,8 +23,8 @@ public class OrderJpaDao implements OrderDao {
 
     @Override
     public Order findOne(Long orderSeq) {
-        Order order = orderRepository.findById(orderSeq).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 주문입니다."));
-
+        Order order = orderRepository.findById(orderSeq).orElseThrow(()
+                -> new EntityNotFoundException("존재하지 않는 주문입니다."));
         return order;
     }
 

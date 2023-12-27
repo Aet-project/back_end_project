@@ -40,11 +40,12 @@ public class GymController {
                 .gymName(gymSaveRequestDto.getGymName())
                 .gymAddress(address)
                 .gymNumber(gymSaveRequestDto.getGymNumber())
+                .gymSports(gymSaveRequestDto.getGymSports())
                 .managerNumber(gymSaveRequestDto.getManagerNumber())
                 .build();
 
         gymService.save(gym);
-        return AetResponse.toResponse(SuccessCode.SUCCESS);
+        return AetResponse.toResponse(SuccessCode.SUCCESS,gym);
 
     }
 

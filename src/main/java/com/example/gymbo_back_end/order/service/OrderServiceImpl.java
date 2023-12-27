@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,17 +34,23 @@ public class OrderServiceImpl implements OrderService{
 
 
     @Override
-    public OrderResponseDto save(OrderRequestDto orderRequestDto, DailyTicketDto dailyTicketDto) {
+    public OrderResponseDto save(OrderRequestDto orderRequestDto, List<DailyTicketDto> dailyTicketList) {
         String memberId = orderRequestDto.getMemberId();
         Member member = memberDao.findByMemberId(memberId).orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
 
-        DailyTicket ticket = ticketDao.find(dailyTicketDto.getTicketSeq());
+
+        List<OrderItem> orderItems = new ArrayList<>();
+
+        for (DailyTicketDto dailyTicket : dailyTicketList) {
+            DailyTicket ticket1 = ticketDao.find(dailyTicket.getTicketSeq());
+            OrderItem orderItem = OrderItem.createOrderItem(ticket1, orderRequestDto.getOrderCount());
+            orderItems.add(orderItem);
+        }
 
 
-        OrderItem orderItem = OrderItem.createOrderItem(ticket, orderRequestDto.getOrderCount());
 
 
-        Order order = Order.createdOrder(member,orderItem);
+        Order order = Order.createdOrder(member,orderItems);
         Order saveOrder = orderDao.save(order);
 
         OrderResponseDto orderResponseDto = OrderResponseDto.builder()
@@ -51,16 +58,13 @@ public class OrderServiceImpl implements OrderService{
                 .memberSeq(saveOrder.getMember().getMemberSeq())
                 .memberId(saveOrder.getMember().getMemberId())
                 .nickName(saveOrder.getMember().getNickName())
-                .startTime(ticket.getReservation().getStartTime())
-                .endTime(ticket.getReservation().getEndTime())
-                .startDay(ticket.getReservation().getStartDay())
                 .build();
 
         return orderResponseDto;
     }
 
     @Override
-    public OrderFindOneResponseDto findOne(Long orderSeq) {
+    public OrderFindOneResponseDto OrderFindMember(Long orderSeq) {
         Order order = orderDao.findOne(orderSeq);
         OrderFindOneResponseDto orderFindOneResponseDto = OrderFindOneResponseDto.createdOrderDto(order);
 

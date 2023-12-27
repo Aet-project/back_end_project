@@ -30,6 +30,9 @@ public class Gym {
     @Embedded
     private Address gymAddress;
 
+    @Column(name = "gym_sports")
+    private String gymSports;
+
     @Column(name = "gym_number") //사업자번호
     private String gymNumber;
 
@@ -42,9 +45,10 @@ public class Gym {
     protected Date createdAt;
 
     @Builder
-    public Gym( String gymName, Address gymAddress, String gymNumber, String managerNumber) {
+    public Gym( String gymName, Address gymAddress, String gymNumber, String managerNumber,String gymSports) {
         this.gymName = gymName;
         this.gymAddress = gymAddress;
+        this.gymSports = gymSports;
         this.gymNumber = gymNumber;
         this.managerNumber = managerNumber;
     }

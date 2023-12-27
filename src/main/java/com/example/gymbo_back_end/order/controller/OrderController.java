@@ -1,10 +1,12 @@
 package com.example.gymbo_back_end.order.controller;
 
+import com.example.gymbo_back_end.OrderItem.repository.OrderItemRepository;
 import com.example.gymbo_back_end.core.commom.code.SuccessCode;
 import com.example.gymbo_back_end.core.commom.response.AetResponse;
 import com.example.gymbo_back_end.core.commom.response.model.ResBodyModel;
 import com.example.gymbo_back_end.core.entity.DailyTicket;
 import com.example.gymbo_back_end.core.entity.Order;
+import com.example.gymbo_back_end.core.entity.OrderItem;
 import com.example.gymbo_back_end.order.dto.OrderFindOneResponseDto;
 import com.example.gymbo_back_end.order.dto.OrderRequestDto;
 import com.example.gymbo_back_end.order.dto.OrderResponseDto;
@@ -15,7 +17,6 @@ import com.example.gymbo_back_end.ticket.service.DailyTicketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -29,15 +30,16 @@ public class OrderController {
 
     private final OrderService orderService;
     private final DailyTicketService dailyTicketService;
+    private final OrderItemRepository orderItemRepository;
 
     @PostMapping
     public ResponseEntity<ResBodyModel> orderSave(@RequestBody OrderRequestDto orderRequestDto) {
 
-        List<DailyTicket> dailyTicketList = dailyTicketService.createdForOrder(orderRequestDto);
+        List<DailyTicket> dailyTicketList = dailyTicketService.createdForOrder(orderRequestDto); //주문 수량 만큼 티켓을 생성
 
         List<DailyTicketDto> dailyTicketDtoList = new ArrayList<>();
 
-        for (int i = 0; i < dailyTicketList.size(); i++) {
+        for (int i = 0; i < dailyTicketList.size(); i++) { //생성된 티켓 수만큼
             DailyTicket dailyTicket = dailyTicketList.get(i);
             DailyTicketDto dailyTicketDto = DailyTicketDto.builder()
                     .dailyTicketPrice(dailyTicket.getDailyTicketPrice())
@@ -46,22 +48,18 @@ public class OrderController {
                     .build();
 
             dailyTicketDtoList.add(dailyTicketDto);
+
         }
 
-        List<OrderResponseDto> orderResponseDtoList = new ArrayList<>();
-
-        for (DailyTicketDto dailyTicketDto : dailyTicketDtoList) {
-            OrderResponseDto orderResponseDto = orderService.save(orderRequestDto, dailyTicketDto);
-            orderResponseDtoList.add(orderResponseDto);
-        }
+        OrderResponseDto orderResponseDto = orderService.save(orderRequestDto, dailyTicketDtoList);
 
 
-        return AetResponse.toResponse(SuccessCode.SUCCESS,orderResponseDtoList);
+        return AetResponse.toResponse(SuccessCode.SUCCESS,orderResponseDto);
 
     }
     @GetMapping("/{orderSeq}") //주문번호로 주문한 회원 조회
-    public ResponseEntity<ResBodyModel> orderFindOne(@PathVariable Long orderSeq) {
-        OrderFindOneResponseDto findOneResponseDto = orderService.findOne(orderSeq);
+    public ResponseEntity<ResBodyModel> orderFindMember(@PathVariable Long orderSeq) {
+        OrderFindOneResponseDto findOneResponseDto = orderService.OrderFindMember(orderSeq);
         return AetResponse.toResponse(SuccessCode.SUCCESS,findOneResponseDto);
     }
 
@@ -78,4 +76,6 @@ public class OrderController {
         }
         return AetResponse.toResponse(SuccessCode.SUCCESS,ordersFindByMemberResponseDtoList);
     }
+
+
 }
