@@ -31,11 +31,11 @@ public class DailyTicket {
     @Column(name = "gym_created_at")
     private Date createdAt;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name = "gym_seq")
     private Gym gym;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name = "reservation_seq")
     private Reservation reservation;
 

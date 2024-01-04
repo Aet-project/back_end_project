@@ -4,6 +4,7 @@ import com.example.gymbo_back_end.core.entity.Member;
 import com.example.gymbo_back_end.core.entity.Order;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderDao {
 
@@ -12,5 +13,7 @@ public interface OrderDao {
     Order findOne(Long orderSeq);
 
     List<Order> findOrdersByMember(Member member);
+
+    Optional<Order> findById(Long orderSeq);
 
 }

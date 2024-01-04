@@ -29,26 +29,20 @@ public class OrderServiceImpl implements OrderService{
     private final TicketDao ticketDao;
     private final MemberDao memberDao;
     private final OrderDao orderDao;
-    private final OrderRepository orderRepository;
 
 
 
     @Override
-    public OrderResponseDto save(OrderRequestDto orderRequestDto, List<DailyTicketDto> dailyTicketList) {
+    public OrderResponseDto save(OrderRequestDto orderRequestDto, List<DailyTicketDto> dailyTicketDtoList) {
         String memberId = orderRequestDto.getMemberId();
         Member member = memberDao.findByMemberId(memberId).orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
-
-
         List<OrderItem> orderItems = new ArrayList<>();
 
-        for (DailyTicketDto dailyTicket : dailyTicketList) {
+        for (DailyTicketDto dailyTicket : dailyTicketDtoList) {
             DailyTicket ticket1 = ticketDao.find(dailyTicket.getTicketSeq());
             OrderItem orderItem = OrderItem.createOrderItem(ticket1, orderRequestDto.getOrderCount());
             orderItems.add(orderItem);
         }
-
-
-
 
         Order order = Order.createdOrder(member,orderItems);
         Order saveOrder = orderDao.save(order);

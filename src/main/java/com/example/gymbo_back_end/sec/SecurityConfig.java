@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .antMatchers("/members/**").permitAll()
                 .antMatchers("/orders/**").permitAll()
                 .antMatchers("/gyms/**").permitAll()
+                .antMatchers("/reservation/**").permitAll()
                 .antMatchers("/ticket/**").permitAll()
                 .antMatchers("/order/**").permitAll()
                 .antMatchers("/members/test").hasRole("USER")

@@ -1,6 +1,7 @@
 package com.example.gymbo_back_end.order.controller;
 
 import com.example.gymbo_back_end.OrderItem.repository.OrderItemRepository;
+import com.example.gymbo_back_end.OrderItem.service.OrderItemService;
 import com.example.gymbo_back_end.core.commom.code.SuccessCode;
 import com.example.gymbo_back_end.core.commom.response.AetResponse;
 import com.example.gymbo_back_end.core.commom.response.model.ResBodyModel;
@@ -19,8 +20,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/order")
@@ -31,6 +34,7 @@ public class OrderController {
     private final OrderService orderService;
     private final DailyTicketService dailyTicketService;
     private final OrderItemRepository orderItemRepository;
+    private final OrderItemService orderItemService;
 
     @PostMapping
     public ResponseEntity<ResBodyModel> orderSave(@RequestBody OrderRequestDto orderRequestDto) {
@@ -72,10 +76,20 @@ public class OrderController {
             OrdersFindByMemberResponseDto ordersFindByMemberResponseDto = new OrdersFindByMemberResponseDto();
             ordersFindByMemberResponseDto.setOrderSeq(order.getOrderSeq());
             ordersFindByMemberResponseDto.setCreatedAt(order.getCreatedAt());
+            ordersFindByMemberResponseDto.setOrderItems(order.getOrderItems());
             ordersFindByMemberResponseDtoList.add(ordersFindByMemberResponseDto);
         }
         return AetResponse.toResponse(SuccessCode.SUCCESS,ordersFindByMemberResponseDtoList);
     }
+
+    @GetMapping("/order_item/{orderSeq}") //주문 번호로 주문 상품 조회
+    public ResponseEntity<ResBodyModel> orderItemFindOrder(@PathVariable Long orderSeq) {
+
+        List<OrderItem> orderItemsByOrder = orderItemService.findOrderItemsByOrder(orderSeq);
+
+        return AetResponse.toResponse(SuccessCode.SUCCESS,orderItemsByOrder);
+    }
+
 
 
 }

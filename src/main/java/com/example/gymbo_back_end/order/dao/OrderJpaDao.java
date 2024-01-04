@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -31,5 +32,10 @@ public class OrderJpaDao implements OrderDao {
     @Override
     public List<Order> findOrdersByMember(Member member) {
         return orderRepository.findOrdersByMember(member);
+    }
+
+    @Override
+    public Optional<Order> findById(Long orderSeq) {
+        return orderRepository.findById(orderSeq);
     }
 }

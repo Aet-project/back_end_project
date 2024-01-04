@@ -18,12 +18,12 @@ public class OrderItem {
     @Column(name = "order_item_seq")
     private Long orderItemSeq;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "order_seq")
     private Order order;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "daily_ticket_seq")
     private DailyTicket dailyTicket;
 
@@ -36,11 +36,10 @@ public class OrderItem {
     public static OrderItem createOrderItem(DailyTicket dailyTicket, int count) {
         String dailyTicketPrice = dailyTicket.getDailyTicketPrice();
         int price = Integer.parseInt(dailyTicketPrice);
-        int resultPrice = price * count; //티켓 가격과 수량을 곱함
         OrderItem orderItem = OrderItem.builder()
                 .dailyTicket(dailyTicket)
                 .count(count)
-                .orderPrice(resultPrice) //주문 가격
+                .orderPrice(price) //주문 가격
                 .build();
         return orderItem;
     }
