@@ -39,23 +39,16 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<ResBodyModel> orderSave(@RequestBody OrderRequestDto orderRequestDto) {
 
-        List<DailyTicket> dailyTicketList = dailyTicketService.createdForOrder(orderRequestDto); //주문 수량 만큼 티켓을 생성
+        DailyTicket dailyTicket = dailyTicketService.createdForOrder(orderRequestDto);//티켓을 생성
 
-        List<DailyTicketDto> dailyTicketDtoList = new ArrayList<>();
 
-        for (int i = 0; i < dailyTicketList.size(); i++) { //생성된 티켓 수만큼
-            DailyTicket dailyTicket = dailyTicketList.get(i);
             DailyTicketDto dailyTicketDto = DailyTicketDto.builder()
                     .dailyTicketPrice(dailyTicket.getDailyTicketPrice())
                     .dailyTicketUse(dailyTicket.getDailyTicketUse())
                     .ticketSeq(dailyTicket.getDailyTicketSeq())
                     .build();
 
-            dailyTicketDtoList.add(dailyTicketDto);
-
-        }
-
-        OrderResponseDto orderResponseDto = orderService.save(orderRequestDto, dailyTicketDtoList);
+        OrderResponseDto orderResponseDto = orderService.save(orderRequestDto, dailyTicketDto);
 
 
         return AetResponse.toResponse(SuccessCode.SUCCESS,orderResponseDto);
@@ -84,9 +77,7 @@ public class OrderController {
 
     @GetMapping("/order_item/{orderSeq}") //주문 번호로 주문 상품 조회
     public ResponseEntity<ResBodyModel> orderItemFindOrder(@PathVariable Long orderSeq) {
-
         List<OrderItem> orderItemsByOrder = orderItemService.findOrderItemsByOrder(orderSeq);
-
         return AetResponse.toResponse(SuccessCode.SUCCESS,orderItemsByOrder);
     }
 

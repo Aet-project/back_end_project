@@ -12,7 +12,7 @@ import java.util.List;
 public interface OrderService {
 
 
-    OrderResponseDto save(OrderRequestDto orderRequestDto, List<DailyTicketDto> dailyTicketList);
+    OrderResponseDto save(OrderRequestDto orderRequestDto, DailyTicketDto dailyTicketDto);
 
     OrderFindOneResponseDto OrderFindMember(Long orderSeq);
 

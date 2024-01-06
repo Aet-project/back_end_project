@@ -34,7 +34,7 @@ public class MemberServiceImpl implements MemberService{
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Override
+    @Override //회원가입
     public Member save(Member member) {
 
         String encode = encoder.encode(member.getPassword());
@@ -48,7 +48,7 @@ public class MemberServiceImpl implements MemberService{
       return jpaMemberDao.save(saveMember);
     }
 
-    @Transactional
+    @Transactional //로그인
     public Optional<TokenInfo> login(String memberId, String password) {
 
         Member member = jpaMemberDao.findByMemberId(memberId).orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
@@ -73,7 +73,7 @@ public class MemberServiceImpl implements MemberService{
         }
     }
 
-    @Override
+    @Override //단일 회원 조회
     public ResponseMemberInfoDto find(String memberId) {
         Member member = jpaMemberDao.findByMemberId(memberId).orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
         ResponseMemberInfoDto responseMemberInfoDto = ResponseMemberInfoDto.builder()

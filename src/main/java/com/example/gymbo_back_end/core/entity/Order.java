@@ -42,12 +42,10 @@ public class Order {
         orderItem.setOrder(this);
     }
 
-    public static Order createdOrder(Member member,  List<OrderItem> orderItems){
+    public static Order createdOrder(Member member,  OrderItem orderItem){
         Order order = new Order();
         order.setMember(member);
-        for (OrderItem orderItem : orderItems) {
-            order.addOrderItem(orderItem);
-        }
+        order.addOrderItem(orderItem);
         return order;
     }
 }

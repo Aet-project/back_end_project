@@ -1,5 +1,6 @@
 package com.example.gymbo_back_end.Reservation.dao;
 
+import com.example.gymbo_back_end.Reservation.dto.ReservationDto;
 import com.example.gymbo_back_end.Reservation.repository.ReservationRepository;
 import com.example.gymbo_back_end.core.entity.Reservation;
 import lombok.RequiredArgsConstructor;
@@ -19,4 +20,16 @@ public class ReservationJpaDao implements ReservationDao{
     public List<Reservation> findReservationsByStartDay(String startDay) {
         return reservationRepository.findReservationsByStartDay(startDay);
     }
+
+    @Override
+    public List<Reservation> findReservationsByStartTime(String startTime) {
+        return reservationRepository.findReservationsByStartTime(startTime);
+    }
+
+    @Override
+    public List<Reservation> findReservationsByStartDayAndGym(ReservationDto reservationDto) {
+        return reservationRepository.findReservationsByStartDayAndGym(reservationDto);
+    }
+
+
 }

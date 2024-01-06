@@ -1,6 +1,7 @@
 package com.example.gymbo_back_end.Reservation.service;
 
 import com.example.gymbo_back_end.Reservation.dao.ReservationDao;
+import com.example.gymbo_back_end.Reservation.dto.ReservationDto;
 import com.example.gymbo_back_end.core.entity.Reservation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,4 +23,17 @@ public class ReservationServiceImpl implements ReservationService{
         log.info("reservationByStartDay = {}",reservationByStartDay);
         return reservationByStartDay;
     }
+
+    @Override
+    public List<Reservation> findReservationByStartTime(String startTime) { //시작 시간으로 조회
+        List<Reservation> reservationsByStartTime = reservationDao.findReservationsByStartTime(startTime);
+        return reservationsByStartTime;
+    }
+
+    @Override
+    public List<Reservation> findReservationsByStartDayAndGym(ReservationDto reservationDto) {
+        List<Reservation> reservationsByStartTimeAndGym = reservationDao.findReservationsByStartDayAndGym(reservationDto);
+        return reservationsByStartTimeAndGym;
+    }
+
 }

@@ -21,6 +21,10 @@ public class Reservation {
     @Column(name = "reservation_seq")
     private Long reservationSeq;
 
+    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinColumn(name = "gym_seq")
+    private Gym gym;
+
     @Column(name = "start_day")
     private String startDay;
 
@@ -36,9 +40,10 @@ public class Reservation {
     private Date reservationDate;                // 예약 생성 날짜
 
 
-    public static Reservation createdReservation(String startTime, String endTime,String startDay) {
+    public static Reservation createdReservation(String startTime, String endTime,String startDay, Gym gym) {
 
         Reservation reservation = Reservation.builder()
+                .gym(gym)
                 .startDay(startDay)
                 .startTime(startTime)
                 .endTime(endTime).build();

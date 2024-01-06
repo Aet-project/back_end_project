@@ -2,13 +2,11 @@ package com.example.gymbo_back_end.order.service;
 
 import com.example.gymbo_back_end.core.entity.*;
 import com.example.gymbo_back_end.core.entity.DailyTicket;
-import com.example.gymbo_back_end.gym.dao.GymDao;
 import com.example.gymbo_back_end.member.dao.MemberDao;
 import com.example.gymbo_back_end.order.dao.OrderDao;
 import com.example.gymbo_back_end.order.dto.OrderFindOneResponseDto;
 import com.example.gymbo_back_end.order.dto.OrderRequestDto;
 import com.example.gymbo_back_end.order.dto.OrderResponseDto;
-import com.example.gymbo_back_end.order.repository.OrderRepository;
 import com.example.gymbo_back_end.ticket.dao.TicketDao;
 import com.example.gymbo_back_end.ticket.dto.DailyTicketDto;
 import lombok.RequiredArgsConstructor;
@@ -31,20 +29,15 @@ public class OrderServiceImpl implements OrderService{
     private final OrderDao orderDao;
 
 
-
     @Override
-    public OrderResponseDto save(OrderRequestDto orderRequestDto, List<DailyTicketDto> dailyTicketDtoList) {
+    public OrderResponseDto save(OrderRequestDto orderRequestDto, DailyTicketDto dailyTicketDto) {
         String memberId = orderRequestDto.getMemberId();
         Member member = memberDao.findByMemberId(memberId).orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
-        List<OrderItem> orderItems = new ArrayList<>();
+        DailyTicket ticket = ticketDao.find(dailyTicketDto.getTicketSeq());
+        OrderItem orderItem = OrderItem.createOrderItem(ticket, orderRequestDto.getOrderCount());
 
-        for (DailyTicketDto dailyTicket : dailyTicketDtoList) {
-            DailyTicket ticket1 = ticketDao.find(dailyTicket.getTicketSeq());
-            OrderItem orderItem = OrderItem.createOrderItem(ticket1, orderRequestDto.getOrderCount());
-            orderItems.add(orderItem);
-        }
 
-        Order order = Order.createdOrder(member,orderItems);
+        Order order = Order.createdOrder(member,orderItem);
         Order saveOrder = orderDao.save(order);
 
         OrderResponseDto orderResponseDto = OrderResponseDto.builder()

@@ -11,7 +11,6 @@ import lombok.Setter;
 public class OrderResponseDto {
 
     private Long orderSeq;
-
     private Long memberSeq;
     private String memberId;
     private String nickName;

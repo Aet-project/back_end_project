@@ -28,7 +28,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping("/join")
+    @PostMapping("/join") //회원 가입
     public ResponseEntity<ResBodyModel> join(@RequestBody RequestMemberJoinDto requestMemberJoinDto) {
 
         Member member = Member.builder()
@@ -43,7 +43,7 @@ public class MemberController {
         return AetResponse.toResponse(SuccessCode.SUCCESS);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/login") //로그인
     public Optional<TokenInfo> login(@RequestBody MemberLoginRequestDto memberLoginRequestDto) {
         String memberId = memberLoginRequestDto.getMemberId();
         String password = memberLoginRequestDto.getPassword();
@@ -51,13 +51,13 @@ public class MemberController {
         return Optional.ofNullable(tokenInfo);
     }
 
-    @GetMapping("/{memberId}")
+    @GetMapping("/{memberId}") //단일 회원 조회
     public ResponseEntity<ResBodyModel> read (@PathVariable String memberId) {
         ResponseMemberInfoDto responseMemberInfoDto = memberService.find(memberId);
        return AetResponse.toResponse(SuccessCode.SUCCESS,responseMemberInfoDto);
     }
 
-    @GetMapping()
+    @GetMapping()//전체 회원 조회
     public ResponseEntity<ResBodyModel> readAll() {
         List<ResponseMemberInfoDto> members = memberService.findAll();
 
@@ -65,14 +65,14 @@ public class MemberController {
 
     }
 
-    @PatchMapping()
+    @PatchMapping() //회원 정보 수정
     public ResponseEntity<ResBodyModel> update( @RequestBody RequestMemberJoinDto requestMemberJoinDto) {
         ResponseMemberInfoDto updateMember = memberService.update( requestMemberJoinDto);
 
         return AetResponse.toResponse(SuccessCode.SUCCESS,updateMember);
     }
 
-    @DeleteMapping("/{memberId}")
+    @DeleteMapping("/{memberId}") //회원 삭제
     public ResponseEntity<ResBodyModel> delete(@PathVariable String memberId) {
         memberService.delete(memberId);
         return AetResponse.toResponse(SuccessCode.SUCCESS);
