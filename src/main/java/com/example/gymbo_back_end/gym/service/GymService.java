@@ -11,11 +11,11 @@ public interface GymService {
 
     Gym save(GymSaveRequestDto gymSaveRequestDto);
 
-    GymResponseDto find(String gymName);
+    Gym find(String gymName);
 
     Gym find(Long gymSeq);
 
     List<Gym> findAll();
 
-    GymResponseDto update(GymSaveRequestDto gymSaveRequestDto);
+    Gym update(GymSaveRequestDto gymSaveRequestDto);
 }

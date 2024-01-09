@@ -35,6 +35,7 @@ public class GymController {
 
         Gym gym = gymService.save(gymSaveRequestDto);
         GymResponseDto gymResponseDto = GymResponseDto.buildDto(gym);
+
         return AetResponse.toResponse(SuccessCode.SUCCESS,gymResponseDto);
 
     }
@@ -44,7 +45,9 @@ public class GymController {
 
         log.info("gymName = {}",gymName);
 
-        GymResponseDto gymResponseDto = gymService.find(gymName);
+        Gym gym = gymService.find(gymName);
+        GymResponseDto gymResponseDto = GymResponseDto.buildDto(gym);
+
         return AetResponse.toResponse(SuccessCode.SUCCESS,gymResponseDto);
 
     }
@@ -64,8 +67,9 @@ public class GymController {
 
     @PatchMapping //운동시설 업데이트
     private ResponseEntity<ResBodyModel> updateGym(@RequestBody GymSaveRequestDto gymSaveRequestDto) {
-        GymResponseDto updateGymResponseDto = gymService.update(gymSaveRequestDto);
-        return AetResponse.toResponse(SuccessCode.SUCCESS,updateGymResponseDto);
+        Gym gym = gymService.update(gymSaveRequestDto);
+        GymResponseDto gymResponseDto = GymResponseDto.buildDto(gym);
+        return AetResponse.toResponse(SuccessCode.SUCCESS,gymResponseDto);
 
     }
 

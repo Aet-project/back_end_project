@@ -42,11 +42,9 @@ public class GymServiceImpl implements GymService {
     }
 
     @Override
-    public GymResponseDto find(String gymName) {
-
+    public Gym find(String gymName) {
         Gym findGym = gymDao.findByGymName(gymName);
-        GymResponseDto gymResponseDto = GymResponseDto.buildDto(findGym);
-        return gymResponseDto;
+        return findGym;
     }
 
     @Override
@@ -61,12 +59,10 @@ public class GymServiceImpl implements GymService {
     }
 
     @Override
-    public GymResponseDto update(GymSaveRequestDto gymSaveRequestDto) {
+    public Gym update(GymSaveRequestDto gymSaveRequestDto) {
         Gym gym = gymDao.findByGymNumber(gymSaveRequestDto.getGymNumber());
         gym.changeInfo(gymSaveRequestDto);
 
-        GymResponseDto gymResponseDto = GymResponseDto.buildDto(gym);
-
-        return gymResponseDto;
+        return gym;
     }
 }
