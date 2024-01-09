@@ -12,7 +12,7 @@ public class ReservationDto {
     private String StartDay;
 
 
-    public static ReservationDto creat(Gym gym, String startDay) {
+    public static ReservationDto buildDto(Gym gym, String startDay) {
         ReservationDto reservationDto = new ReservationDto();
         reservationDto.setGym(gym);
         reservationDto.setStartDay(startDay);

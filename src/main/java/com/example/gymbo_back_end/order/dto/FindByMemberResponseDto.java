@@ -1,5 +1,6 @@
 package com.example.gymbo_back_end.order.dto;
 
+import com.example.gymbo_back_end.core.entity.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,20 +20,18 @@ public class FindByMemberResponseDto {
     private String reservationTime; //예약시간
     private Boolean dailyTicketUse; // 티켓 사용 여부
     private Date createdAt; //주문 날짜
-    public static FindByMemberResponseDto creat(Long orderSeq, Date createdAt, String  gymName, int count
-            ,String reservationTime, Long gymSeq, Long orderItemSeq
-            ,Long dailyTicketSeq, Boolean dailyTicketUse) {
+    public static FindByMemberResponseDto buildDto(Order order, OrderItem orderItem, Reservation reservation, DailyTicket dailyTicket, Gym gym) {
 
         FindByMemberResponseDto responseDto = new FindByMemberResponseDto();
-        responseDto.setCreatedAt(createdAt);
-        responseDto.setOrderSeq(orderSeq);
-        responseDto.setGymName(gymName);
-        responseDto.setGymSeq(gymSeq);
-        responseDto.setCount(count);
-        responseDto.setReservationTime(reservationTime);
-        responseDto.setDailyTicketSeq(dailyTicketSeq);
-        responseDto.setDailyTicketUse(dailyTicketUse);
-        responseDto.setOrderItemSeq(orderItemSeq);
+        responseDto.setCreatedAt(order.getCreatedAt());
+        responseDto.setOrderSeq(order.getOrderSeq());
+        responseDto.setGymName(gym.getGymName());
+        responseDto.setGymSeq(gym.getGymSeq());
+        responseDto.setCount(orderItem.getCount());
+        responseDto.setReservationTime(reservation.getStartTime());
+        responseDto.setDailyTicketSeq(dailyTicket.getDailyTicketSeq());
+        responseDto.setDailyTicketUse(dailyTicket.getDailyTicketUse());
+        responseDto.setOrderItemSeq(orderItem.getOrderItemSeq());
 
         return responseDto;
     }

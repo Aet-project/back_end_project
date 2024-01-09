@@ -1,10 +1,14 @@
 package com.example.gymbo_back_end.ticket.dto;
 
 import com.example.gymbo_back_end.core.commom.response.Address;
+import com.example.gymbo_back_end.core.entity.DailyTicket;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Builder
 public class DailyTicketDto {
 

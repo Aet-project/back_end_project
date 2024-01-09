@@ -61,7 +61,7 @@ public class ReservationController {
 
         Gym gym = gymService.find(dto.getGymSeq());
 
-        ReservationDto reservationDto = ReservationDto.creat(gym, dto.getStartDay());
+        ReservationDto reservationDto = ReservationDto.buildDto(gym, dto.getStartDay());
 
         List<Reservation> reservationsByStartTimeAndGymList = reservationService.findReservationsByStartDayAndGym(reservationDto);
 
