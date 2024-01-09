@@ -9,13 +9,13 @@ import java.util.List;
 
 public interface GymService {
 
-    Gym save(Gym gym);
+    Gym save(GymSaveRequestDto gymSaveRequestDto);
 
     GymResponseDto find(String gymName);
 
     Gym find(Long gymSeq);
 
-    List<GymResponseDto> findAll();
+    List<Gym> findAll();
 
     GymResponseDto update(GymSaveRequestDto gymSaveRequestDto);
 }

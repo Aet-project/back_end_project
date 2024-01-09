@@ -23,18 +23,17 @@ public class JpaGymDao implements GymDao{
     }
 
     @Override
-    public Optional<Gym> findByGymName(String gymName) {
-        return gymRepository.findByGymName(gymName);
+    public Gym findByGymName(String gymName) {
+        return gymRepository.findByGymName(gymName).orElseThrow(()-> new EntityNotFoundException("존재하지 않는 운동시설 입니다."));
     }
 
     @Override
-    public Optional<Gym> findByGymNumber(String gymNumber) {
-        return gymRepository.findByGymNumber(gymNumber);
+    public Gym findByGymNumber(String gymNumber) {
+        return gymRepository.findByGymNumber(gymNumber).orElseThrow(()-> new EntityNotFoundException("존재하지 않는 운동시설 입니다."));
     }
 
     @Override
     public List<Gym> findAll() {
-
         List<Gym> gyms = gymRepository.findAll();
         return gyms;
     }

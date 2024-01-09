@@ -9,9 +9,9 @@ public interface GymDao {
 
     Gym save(Gym gym);
 
-    Optional<Gym> findByGymName(String gymName);
+    Gym findByGymName(String gymName);
 
-    Optional<Gym> findByGymNumber(String gymNumber);
+    Gym findByGymNumber(String gymNumber);
 
     List<Gym> findAll();
 

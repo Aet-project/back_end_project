@@ -20,10 +20,13 @@ public class GymResponseDto {
 
     private String managerNumber;
 
+    private String gymSports;
+
 
     @Builder
-    public GymResponseDto(String gymName, Address gymAddress, String gymNumber, String managerNumber) {
+    public GymResponseDto(String gymName, Address gymAddress, String gymNumber, String managerNumber,String gymSports) {
         this.gymName = gymName;
+        this.gymSports = gymSports;
         this.gymAddress = gymAddress;
         this.gymNumber = gymNumber;
         this.managerNumber = managerNumber;
@@ -32,6 +35,7 @@ public class GymResponseDto {
     public static GymResponseDto buildDto (Gym gym) {
        return GymResponseDto.builder()
                .gymAddress(gym.getGymAddress())
+               .gymSports(gym.getGymSports())
                .gymNumber(gym.getGymNumber())
                .gymName(gym.getGymName())
                .managerNumber(gym.getManagerNumber())

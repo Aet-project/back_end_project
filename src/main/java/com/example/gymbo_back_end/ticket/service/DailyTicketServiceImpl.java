@@ -34,7 +34,7 @@ public class DailyTicketServiceImpl implements DailyTicketService{
     public DailyTicket createdForOrder(OrderRequestDto orderRequestDto) {
 
         for (int i = 0; i < orderRequestDto.getOrderCount(); i++) {
-            Gym gym = gymDao.findByGymName(orderRequestDto.getGymName()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 운동시설 입니다."));
+            Gym gym = gymDao.findByGymName(orderRequestDto.getGymName());
 
             if (orderRequestDto.getStartTime() != null) {
 

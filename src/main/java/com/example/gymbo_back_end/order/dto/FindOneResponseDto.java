@@ -14,7 +14,7 @@ public class FindOneResponseDto {
     private Long memberSeq; //주문 회원
 
 
-    public static FindOneResponseDto createdOrderDto(Order order){
+    public static FindOneResponseDto buildDto(Order order){
         FindOneResponseDto orderFindOneResponseDto = new FindOneResponseDto();
         orderFindOneResponseDto.setMemberSeq(order.getMember().getMemberSeq());
         orderFindOneResponseDto.setOrderSeq(order.getOrderSeq());

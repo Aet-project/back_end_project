@@ -56,7 +56,7 @@ public class OrderServiceImpl implements OrderService{
     @Override //주문번호로 멤버 조회
     public FindOneResponseDto OrderFindMember(Long orderSeq) {
         Order order = orderDao.findOne(orderSeq);
-        FindOneResponseDto orderFindOneResponseDto = FindOneResponseDto.createdOrderDto(order);
+        FindOneResponseDto orderFindOneResponseDto = FindOneResponseDto.buildDto(order);
 
         return orderFindOneResponseDto;
     }
