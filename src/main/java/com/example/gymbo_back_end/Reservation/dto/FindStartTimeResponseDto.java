@@ -5,14 +5,14 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class ReservationStartTimeResponseDto {
+public class FindStartTimeResponseDto {
 
     private String gymName;
     private String startDay;
     private String startTime;
 
-    public static  ReservationStartTimeResponseDto create(String gymName, String startDay, String startTime) {
-        ReservationStartTimeResponseDto reservationStartTimeResponseDto = new ReservationStartTimeResponseDto();
+    public static FindStartTimeResponseDto create(String gymName, String startDay, String startTime) {
+        FindStartTimeResponseDto reservationStartTimeResponseDto = new FindStartTimeResponseDto();
         reservationStartTimeResponseDto.setStartTime(startTime);
         reservationStartTimeResponseDto.setStartDay(startDay);
         reservationStartTimeResponseDto.setGymName(gymName);

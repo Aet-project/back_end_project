@@ -21,7 +21,7 @@ public class Reservation {
     @Column(name = "reservation_seq")
     private Long reservationSeq;
 
-    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "gym_seq")
     private Gym gym;
 

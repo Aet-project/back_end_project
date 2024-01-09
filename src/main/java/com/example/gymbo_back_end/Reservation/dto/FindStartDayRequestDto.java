@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ReservationFindStartDayRequestDto {
+public class FindStartDayRequestDto {
 
     private String StartDay;
 }

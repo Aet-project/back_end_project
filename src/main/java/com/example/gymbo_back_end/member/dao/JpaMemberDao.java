@@ -29,8 +29,8 @@ public class JpaMemberDao implements MemberDao{
     }
 
     @Override
-    public Optional<Member> findByMemberId(String memberId) {
-        return memberRepository.findByMemberId(memberId);
+    public Member findByMemberId(String memberId) {
+        return memberRepository.findByMemberId(memberId).orElseThrow(() -> new EntityNotFoundException("존재하지 않은 회원입니다."));
     }
 
     @Override

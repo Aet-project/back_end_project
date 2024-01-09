@@ -2,6 +2,7 @@ package com.example.gymbo_back_end.ticket.dao;
 
 import com.example.gymbo_back_end.core.entity.DailyTicket;
 import com.example.gymbo_back_end.core.entity.Gym;
+import com.example.gymbo_back_end.core.entity.Member;
 import com.example.gymbo_back_end.ticket.repository.DailyTicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -27,6 +28,12 @@ public class TicketJpaDao implements TicketDao{
     @Override
     public List<DailyTicket> findDailyTicketsByGym(Gym gym) {
         return dailyTicketRepository.findDailyTicketsByGym(gym);
+    }
+
+    @Override
+    public List<DailyTicket> findByMember(Member member) {
+        List<DailyTicket> byMember = dailyTicketRepository.findByMember(member);
+        return byMember;
     }
 
 }

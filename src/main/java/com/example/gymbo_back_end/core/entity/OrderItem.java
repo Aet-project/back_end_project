@@ -23,7 +23,7 @@ public class OrderItem {
     @JoinColumn(name = "order_seq")
     private Order order;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "daily_ticket_seq")
     private DailyTicket dailyTicket;
 
@@ -35,7 +35,7 @@ public class OrderItem {
     //==생성 메서드==//
     public static OrderItem createOrderItem(DailyTicket dailyTicket, int count) {
         String dailyTicketPrice = dailyTicket.getDailyTicketPrice();
-        int price = Integer.parseInt(dailyTicketPrice);
+        int price = Integer.parseInt(dailyTicketPrice)*count;
         OrderItem orderItem = OrderItem.builder()
                 .dailyTicket(dailyTicket)
                 .count(count)

@@ -4,7 +4,7 @@ import com.example.gymbo_back_end.core.entity.*;
 import com.example.gymbo_back_end.core.entity.DailyTicket;
 import com.example.gymbo_back_end.member.dao.MemberDao;
 import com.example.gymbo_back_end.order.dao.OrderDao;
-import com.example.gymbo_back_end.order.dto.OrderFindOneResponseDto;
+import com.example.gymbo_back_end.order.dto.FindOneResponseDto;
 import com.example.gymbo_back_end.order.dto.OrderRequestDto;
 import com.example.gymbo_back_end.order.dto.OrderResponseDto;
 import com.example.gymbo_back_end.ticket.dao.TicketDao;
@@ -14,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,7 +30,7 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public OrderResponseDto save(OrderRequestDto orderRequestDto, DailyTicketDto dailyTicketDto) {
         String memberId = orderRequestDto.getMemberId();
-        Member member = memberDao.findByMemberId(memberId).orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
+        Member member = memberDao.findByMemberId(memberId);
         DailyTicket ticket = ticketDao.find(dailyTicketDto.getTicketSeq());
         OrderItem orderItem = OrderItem.createOrderItem(ticket, orderRequestDto.getOrderCount());
 
@@ -50,20 +48,27 @@ public class OrderServiceImpl implements OrderService{
         return orderResponseDto;
     }
 
-    @Override
-    public OrderFindOneResponseDto OrderFindMember(Long orderSeq) {
+    @Override //주문 번호로 주문 찾기
+    public Order find(Long orderSeq) {
+        return orderDao.findOne(orderSeq);
+    }
+
+    @Override //주문번호로 멤버 조회
+    public FindOneResponseDto OrderFindMember(Long orderSeq) {
         Order order = orderDao.findOne(orderSeq);
-        OrderFindOneResponseDto orderFindOneResponseDto = OrderFindOneResponseDto.createdOrderDto(order);
+        FindOneResponseDto orderFindOneResponseDto = FindOneResponseDto.createdOrderDto(order);
 
         return orderFindOneResponseDto;
     }
 
-    @Override
+    @Override// 멤버로 주문 조회
     public List<Order> memberFindOrders(Long memberSeq) {
         Member member = memberDao.find(memberSeq);
         List<Order> ordersByMember = orderDao.findOrdersByMember(member);
         return ordersByMember;
     }
+
+
 
 
 }

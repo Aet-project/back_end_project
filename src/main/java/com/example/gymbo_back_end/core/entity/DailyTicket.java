@@ -26,16 +26,20 @@ public class DailyTicket {
     @Column(name = "daily_ticket_use")
     private Boolean dailyTicketUse;     //일일권 사용 가능 여부
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_seq")
+    private Member member; //주문 회원
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "gym_created_at")
     private Date createdAt;
 
-    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "gym_seq")
     private Gym gym;
 
-    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "reservation_seq")
     private Reservation reservation;
 

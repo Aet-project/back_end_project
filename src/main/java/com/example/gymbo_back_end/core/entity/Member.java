@@ -44,7 +44,7 @@ public class Member implements UserDetails {
     private Date joinDate;                // 가입 날짜
 
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 

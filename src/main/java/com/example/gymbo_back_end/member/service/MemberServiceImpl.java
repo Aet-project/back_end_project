@@ -51,7 +51,7 @@ public class MemberServiceImpl implements MemberService{
     @Transactional //로그인
     public Optional<TokenInfo> login(String memberId, String password) {
 
-        Member member = jpaMemberDao.findByMemberId(memberId).orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
+        Member member = jpaMemberDao.findByMemberId(memberId);
 
 
         if (encoder.matches(password,member.getPassword())==true) { //비밀번호가 암호화된 비민번호와 일치한지 확인
@@ -75,7 +75,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Override //단일 회원 조회
     public ResponseMemberInfoDto find(String memberId) {
-        Member member = jpaMemberDao.findByMemberId(memberId).orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
+        Member member = jpaMemberDao.findByMemberId(memberId);
         ResponseMemberInfoDto responseMemberInfoDto = ResponseMemberInfoDto.builder()
                 .memberId(member.getMemberId())
                 .nickName(member.getNickName())
@@ -96,8 +96,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public ResponseMemberInfoDto update( RequestMemberJoinDto requestMemberJoinDto) {
-        Member member = jpaMemberDao.findByMemberId(requestMemberJoinDto.getMemberId())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 회원입니다."));
+        Member member = jpaMemberDao.findByMemberId(requestMemberJoinDto.getMemberId());
         member.changeInfo(requestMemberJoinDto);
        return ResponseMemberInfoDto.buildDto(member);
     }

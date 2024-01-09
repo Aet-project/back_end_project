@@ -7,15 +7,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OrderFindOneResponseDto {
+public class FindOneResponseDto {
 
 
     private Long orderSeq;
     private Long memberSeq; //주문 회원
 
 
-    public static OrderFindOneResponseDto createdOrderDto(Order order){
-        OrderFindOneResponseDto orderFindOneResponseDto = new OrderFindOneResponseDto();
+    public static FindOneResponseDto createdOrderDto(Order order){
+        FindOneResponseDto orderFindOneResponseDto = new FindOneResponseDto();
         orderFindOneResponseDto.setMemberSeq(order.getMember().getMemberSeq());
         orderFindOneResponseDto.setOrderSeq(order.getOrderSeq());
 

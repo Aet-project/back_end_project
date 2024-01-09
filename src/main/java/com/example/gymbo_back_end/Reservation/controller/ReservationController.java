@@ -27,21 +27,37 @@ public class ReservationController {
     private final DailyTicketService dailyTicketService;
     private final GymService gymService;
     @PostMapping("/start_day") // 시작 날짜로 예약 조회
-    public ResponseEntity<ResBodyModel> findReservationByStartDay(@RequestBody ReservationFindStartDayRequestDto reservationFindStartDayRequestDto){
+    public ResponseEntity<ResBodyModel> findReservationByStartDay(@RequestBody FindStartDayRequestDto reservationFindStartDayRequestDto){
         String startDay = reservationFindStartDayRequestDto.getStartDay();
         List<Reservation> reservationByStartDay = reservationService.findReservationByStartDay(startDay);
-        return AetResponse.toResponse(SuccessCode.SUCCESS,reservationByStartDay);
+        List<FindStartTimeResponseDto> responseDtoList = new ArrayList<>();
+        for (Reservation reservation : reservationByStartDay) {
+            FindStartTimeResponseDto responseDto = FindStartTimeResponseDto.create(reservation.getGym().getGymName()
+                    ,reservation.getStartDay()
+                    , reservation.getStartTime());
+            responseDtoList.add(responseDto);
+        }
+
+
+        return AetResponse.toResponse(SuccessCode.SUCCESS,responseDtoList);
     }
 
     @PostMapping("/start_time") //시작 시간으로 조회
-    public ResponseEntity<ResBodyModel> findReservationByStartTime(@RequestBody ReservationFindStartTimeRequestDto reservationFindStartTimeRequestDto) {
+    public ResponseEntity<ResBodyModel> findReservationByStartTime(@RequestBody FindStartTimeRequestDto reservationFindStartTimeRequestDto) {
 
         String startTime = reservationFindStartTimeRequestDto.getStartTime();
         List<Reservation> reservationByStartTime = reservationService.findReservationByStartTime(startTime);
-        return AetResponse.toResponse(SuccessCode.SUCCESS,reservationByStartTime);
+        List<FindStartTimeResponseDto> responseDtoList = new ArrayList<>();
+        for (Reservation reservation : reservationByStartTime) {
+            FindStartTimeResponseDto responseDto = FindStartTimeResponseDto.create(reservation.getGym().getGymName()
+                    , reservation.getStartDay()
+                    , reservation.getStartTime());
+            responseDtoList.add(responseDto);
+        }
+        return AetResponse.toResponse(SuccessCode.SUCCESS,responseDtoList);
     }
     @PostMapping("/gym_seq/start_day")//요청받은 gymSeq와 startDay를 통해 예약 현황 조회
-    public ResponseEntity<ResBodyModel> findReservationByTest(@RequestBody ReservationFindStartDayAndGymDto dto) {
+    public ResponseEntity<ResBodyModel> findReservationByTest(@RequestBody FindStartDayAndGymRequestDto dto) {
 
         Gym gym = gymService.find(dto.getGymSeq());
 
@@ -49,11 +65,11 @@ public class ReservationController {
 
         List<Reservation> reservationsByStartTimeAndGymList = reservationService.findReservationsByStartDayAndGym(reservationDto);
 
-        List<ReservationStartTimeResponseDto> reservationStartTimeResponseDtoList = new ArrayList<>();
+        List<FindStartTimeResponseDto> reservationStartTimeResponseDtoList = new ArrayList<>();
 
         for (Reservation reservation : reservationsByStartTimeAndGymList) {
             Gym ReGym = reservation.getGym();
-            ReservationStartTimeResponseDto ResponseDto = ReservationStartTimeResponseDto.create(ReGym.getGymName(), reservation.getStartDay(), reservation.getStartTime());
+            FindStartTimeResponseDto ResponseDto = FindStartTimeResponseDto.create(ReGym.getGymName(), reservation.getStartDay(), reservation.getStartTime());
             reservationStartTimeResponseDtoList.add(ResponseDto);
         }
 

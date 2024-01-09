@@ -1,17 +1,14 @@
 package com.example.gymbo_back_end.order.controller;
 
-import com.example.gymbo_back_end.OrderItem.repository.OrderItemRepository;
 import com.example.gymbo_back_end.OrderItem.service.OrderItemService;
 import com.example.gymbo_back_end.core.commom.code.SuccessCode;
 import com.example.gymbo_back_end.core.commom.response.AetResponse;
 import com.example.gymbo_back_end.core.commom.response.model.ResBodyModel;
-import com.example.gymbo_back_end.core.entity.DailyTicket;
-import com.example.gymbo_back_end.core.entity.Order;
-import com.example.gymbo_back_end.core.entity.OrderItem;
-import com.example.gymbo_back_end.order.dto.OrderFindOneResponseDto;
+import com.example.gymbo_back_end.core.entity.*;
+import com.example.gymbo_back_end.order.dto.FindOneResponseDto;
 import com.example.gymbo_back_end.order.dto.OrderRequestDto;
 import com.example.gymbo_back_end.order.dto.OrderResponseDto;
-import com.example.gymbo_back_end.order.dto.OrdersFindByMemberResponseDto;
+import com.example.gymbo_back_end.order.dto.FindByMemberResponseDto;
 import com.example.gymbo_back_end.order.service.OrderService;
 import com.example.gymbo_back_end.ticket.dto.DailyTicketDto;
 import com.example.gymbo_back_end.ticket.service.DailyTicketService;
@@ -20,10 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/order")
@@ -33,7 +28,6 @@ public class OrderController {
 
     private final OrderService orderService;
     private final DailyTicketService dailyTicketService;
-    private final OrderItemRepository orderItemRepository;
     private final OrderItemService orderItemService;
 
     @PostMapping
@@ -56,7 +50,7 @@ public class OrderController {
     }
     @GetMapping("/{orderSeq}") //주문번호로 주문한 회원 조회
     public ResponseEntity<ResBodyModel> orderFindMember(@PathVariable Long orderSeq) {
-        OrderFindOneResponseDto findOneResponseDto = orderService.OrderFindMember(orderSeq);
+        FindOneResponseDto findOneResponseDto = orderService.OrderFindMember(orderSeq);
         return AetResponse.toResponse(SuccessCode.SUCCESS,findOneResponseDto);
     }
 
@@ -64,21 +58,40 @@ public class OrderController {
     public ResponseEntity<ResBodyModel> memberFindOrder(@PathVariable Long memberSeq){
         List<Order> orders = orderService.memberFindOrders(memberSeq);
 
-        List<OrdersFindByMemberResponseDto> ordersFindByMemberResponseDtoList = new ArrayList<>();
+        List<FindByMemberResponseDto> ordersFindByMemberResponseDtoList = new ArrayList<>();
         for (Order order : orders) {
-            OrdersFindByMemberResponseDto ordersFindByMemberResponseDto = new OrdersFindByMemberResponseDto();
-            ordersFindByMemberResponseDto.setOrderSeq(order.getOrderSeq());
-            ordersFindByMemberResponseDto.setCreatedAt(order.getCreatedAt());
-            ordersFindByMemberResponseDto.setOrderItems(order.getOrderItems());
-            ordersFindByMemberResponseDtoList.add(ordersFindByMemberResponseDto);
+            List<OrderItem> orderItems = order.getOrderItems();
+
+            for (OrderItem orderItem : orderItems) {
+                DailyTicket dailyTicket = orderItem.getDailyTicket();
+                Reservation reservation = dailyTicket.getReservation();
+                Gym gym = dailyTicket.getGym();
+                FindByMemberResponseDto responseDto = FindByMemberResponseDto.creat(order.getOrderSeq(), order.getCreatedAt(), gym.getGymName()
+                        , orderItem.getCount(),reservation.getStartTime(), gym.getGymSeq(), orderItem.getOrderItemSeq()
+                        , dailyTicket.getDailyTicketSeq(), dailyTicket.getDailyTicketUse());
+                ordersFindByMemberResponseDtoList.add(responseDto);
+            }
         }
         return AetResponse.toResponse(SuccessCode.SUCCESS,ordersFindByMemberResponseDtoList);
     }
 
     @GetMapping("/order_item/{orderSeq}") //주문 번호로 주문 상품 조회
     public ResponseEntity<ResBodyModel> orderItemFindOrder(@PathVariable Long orderSeq) {
+        Order order = orderService.find(orderSeq);
+        List<FindByMemberResponseDto> ordersFindByMemberResponseDtoList = new ArrayList<>();
+
         List<OrderItem> orderItemsByOrder = orderItemService.findOrderItemsByOrder(orderSeq);
-        return AetResponse.toResponse(SuccessCode.SUCCESS,orderItemsByOrder);
+
+        for (OrderItem orderItem : orderItemsByOrder) {
+            DailyTicket dailyTicket = orderItem.getDailyTicket();
+            Reservation reservation = dailyTicket.getReservation();
+            Gym gym = dailyTicket.getGym();
+            FindByMemberResponseDto responseDto = FindByMemberResponseDto.creat(orderSeq, order.getCreatedAt(), gym.getGymName()
+                    ,orderItem.getCount(),reservation.getStartTime(), gym.getGymSeq(), orderItem.getOrderItemSeq()
+                    , dailyTicket.getDailyTicketSeq(), dailyTicket.getDailyTicketUse());
+            ordersFindByMemberResponseDtoList.add(responseDto);
+        }
+        return AetResponse.toResponse(SuccessCode.SUCCESS,ordersFindByMemberResponseDtoList);
     }
 
 

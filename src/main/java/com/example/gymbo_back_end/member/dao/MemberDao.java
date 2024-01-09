@@ -10,7 +10,7 @@ public interface MemberDao {
 
     Member save(Member member);
 
-    Optional<Member> findByMemberId(String memberId);
+    Member findByMemberId(String memberId);
 
     List<ResponseMemberInfoDto> findAll();
 
