@@ -29,16 +29,15 @@ public class ReservationController {
     @PostMapping("/start_day") // 시작 날짜로 예약 조회
     public ResponseEntity<ResBodyModel> findReservationByStartDay(@RequestBody FindStartDayRequestDto reservationFindStartDayRequestDto){
         String startDay = reservationFindStartDayRequestDto.getStartDay();
+
         List<Reservation> reservationByStartDay = reservationService.findReservationByStartDay(startDay);
+
         List<FindStartTimeResponseDto> responseDtoList = new ArrayList<>();
+
         for (Reservation reservation : reservationByStartDay) {
-            FindStartTimeResponseDto responseDto = FindStartTimeResponseDto.create(reservation.getGym().getGymName()
-                    ,reservation.getStartDay()
-                    , reservation.getStartTime());
+            FindStartTimeResponseDto responseDto = FindStartTimeResponseDto.buildDto(reservation);
             responseDtoList.add(responseDto);
         }
-
-
         return AetResponse.toResponse(SuccessCode.SUCCESS,responseDtoList);
     }
 
@@ -49,9 +48,7 @@ public class ReservationController {
         List<Reservation> reservationByStartTime = reservationService.findReservationByStartTime(startTime);
         List<FindStartTimeResponseDto> responseDtoList = new ArrayList<>();
         for (Reservation reservation : reservationByStartTime) {
-            FindStartTimeResponseDto responseDto = FindStartTimeResponseDto.create(reservation.getGym().getGymName()
-                    , reservation.getStartDay()
-                    , reservation.getStartTime());
+            FindStartTimeResponseDto responseDto = FindStartTimeResponseDto.buildDto(reservation);
             responseDtoList.add(responseDto);
         }
         return AetResponse.toResponse(SuccessCode.SUCCESS,responseDtoList);
@@ -68,8 +65,7 @@ public class ReservationController {
         List<FindStartTimeResponseDto> reservationStartTimeResponseDtoList = new ArrayList<>();
 
         for (Reservation reservation : reservationsByStartTimeAndGymList) {
-            Gym ReGym = reservation.getGym();
-            FindStartTimeResponseDto ResponseDto = FindStartTimeResponseDto.create(ReGym.getGymName(), reservation.getStartDay(), reservation.getStartTime());
+            FindStartTimeResponseDto ResponseDto = FindStartTimeResponseDto.buildDto(reservation);
             reservationStartTimeResponseDtoList.add(ResponseDto);
         }
 

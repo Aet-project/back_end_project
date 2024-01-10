@@ -2,6 +2,7 @@ package com.example.gymbo_back_end.member.service;
 
 import com.example.gymbo_back_end.core.entity.Member;
 import com.example.gymbo_back_end.jwt.TokenInfo;
+import com.example.gymbo_back_end.member.dto.ReissueTokensRequestDto;
 import com.example.gymbo_back_end.member.dto.RequestMemberJoinDto;
 import com.example.gymbo_back_end.member.dto.ResponseMemberInfoDto;
 
@@ -13,6 +14,9 @@ public interface MemberService {
     Member save(Member member);
 
     Optional<TokenInfo> login(String memberId, String password);
+
+    TokenInfo reissueTokens(String refreshToken,
+                            ReissueTokensRequestDto reissueTokensRequestDto);
 
     ResponseMemberInfoDto find(String userEmail);
 

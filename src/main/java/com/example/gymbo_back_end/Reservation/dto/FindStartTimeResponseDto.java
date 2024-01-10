@@ -1,5 +1,6 @@
 package com.example.gymbo_back_end.Reservation.dto;
 
+import com.example.gymbo_back_end.core.entity.Reservation;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,11 +12,11 @@ public class FindStartTimeResponseDto {
     private String startDay;
     private String startTime;
 
-    public static FindStartTimeResponseDto create(String gymName, String startDay, String startTime) {
+    public static FindStartTimeResponseDto buildDto(Reservation reservation) {
         FindStartTimeResponseDto reservationStartTimeResponseDto = new FindStartTimeResponseDto();
-        reservationStartTimeResponseDto.setStartTime(startTime);
-        reservationStartTimeResponseDto.setStartDay(startDay);
-        reservationStartTimeResponseDto.setGymName(gymName);
+        reservationStartTimeResponseDto.setStartTime(reservation.getStartTime());
+        reservationStartTimeResponseDto.setStartDay(reservation.getStartDay());
+        reservationStartTimeResponseDto.setGymName(reservation.getGym().getGymName());
         return reservationStartTimeResponseDto;
     }
 }

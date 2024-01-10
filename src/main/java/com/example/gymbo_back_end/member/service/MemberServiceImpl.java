@@ -4,6 +4,7 @@ import com.example.gymbo_back_end.core.entity.Member;
 import com.example.gymbo_back_end.jwt.JwtTokenProvider;
 import com.example.gymbo_back_end.jwt.TokenInfo;
 import com.example.gymbo_back_end.member.dao.JpaMemberDao;
+import com.example.gymbo_back_end.member.dto.ReissueTokensRequestDto;
 import com.example.gymbo_back_end.member.dto.RequestMemberJoinDto;
 import com.example.gymbo_back_end.member.dto.ResponseMemberInfoDto;
 import com.example.gymbo_back_end.member.repository.MemberRepository;
@@ -12,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,7 +48,6 @@ public class MemberServiceImpl implements MemberService{
                 .build();
       return jpaMemberDao.save(saveMember);
     }
-
     @Transactional //로그인
     public Optional<TokenInfo> login(String memberId, String password) {
 
@@ -67,10 +67,43 @@ public class MemberServiceImpl implements MemberService{
             // 3. 인증 정보를 기반으로 JWT 토큰 생성
             TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
 
+            member.setRefreshToken(tokenInfo.getRefreshToken());
+
             return Optional.ofNullable(tokenInfo);
         } else {
             return null;
         }
+    }
+
+    @Override
+    @Transactional // 토큰 재발급 로직
+    public TokenInfo reissueTokens(String refreshToken, ReissueTokensRequestDto reissueTokensRequestDto) {
+            Member member = memberRepository.findByMemberId(reissueTokensRequestDto.getMemberId())
+                    .orElseThrow(() -> new EntityNotFoundException("존재하는 회원이 없습니다."));
+
+            if (jwtTokenProvider.validateToken(refreshToken) &&
+                    refreshToken.equals(member.getRefreshToken())) {
+                TokenInfo tokenInfo = reissueTokensFromUser(member);
+                member.setRefreshToken(tokenInfo.getRefreshToken());
+                return tokenInfo;
+            }
+
+            throw new IllegalArgumentException("토큰 재발급 실패");
+    }
+
+    private TokenInfo reissueTokensFromUser(Member member) {
+
+        // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
+        // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(member.getMemberId(), member.getPassword());
+
+        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
+        // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+
+
+        return jwtTokenProvider.generateToken(authentication);
     }
 
     @Override //단일 회원 조회

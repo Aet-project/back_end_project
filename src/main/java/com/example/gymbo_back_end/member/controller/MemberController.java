@@ -6,6 +6,7 @@ import com.example.gymbo_back_end.core.commom.response.model.ResBodyModel;
 import com.example.gymbo_back_end.core.entity.Member;
 import com.example.gymbo_back_end.jwt.TokenInfo;
 import com.example.gymbo_back_end.member.dto.MemberLoginRequestDto;
+import com.example.gymbo_back_end.member.dto.ReissueTokensRequestDto;
 import com.example.gymbo_back_end.member.dto.RequestMemberJoinDto;
 import com.example.gymbo_back_end.member.dto.ResponseMemberInfoDto;
 import com.example.gymbo_back_end.member.service.MemberService;
@@ -15,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -48,6 +48,14 @@ public class MemberController {
         String memberId = memberLoginRequestDto.getMemberId();
         String password = memberLoginRequestDto.getPassword();
         TokenInfo tokenInfo = memberService.login(memberId, password).orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
+        return Optional.ofNullable(tokenInfo);
+    }
+
+    @PostMapping("/re_token")
+    private Optional<TokenInfo> reToken(@RequestHeader("refreshToken") String refreshToken,
+                                        @RequestBody ReissueTokensRequestDto reissueTokensRequestDto) {
+        TokenInfo tokenInfo = memberService.reissueTokens(refreshToken, reissueTokensRequestDto);
+
         return Optional.ofNullable(tokenInfo);
     }
 

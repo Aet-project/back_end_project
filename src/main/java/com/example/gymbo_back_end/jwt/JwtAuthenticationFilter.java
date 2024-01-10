@@ -1,5 +1,4 @@
 package com.example.gymbo_back_end.jwt;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,7 +11,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
