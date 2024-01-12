@@ -1,5 +1,6 @@
 package com.example.gymbo_back_end.gym.dao;
 
+import com.example.gymbo_back_end.core.commom.exception.gym.GymNotFoundException;
 import com.example.gymbo_back_end.core.entity.Gym;
 import com.example.gymbo_back_end.gym.repository.GymRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +25,12 @@ public class JpaGymDao implements GymDao{
 
     @Override
     public Gym findByGymName(String gymName) {
-        return gymRepository.findByGymName(gymName).orElseThrow(()-> new EntityNotFoundException("존재하지 않는 운동시설 입니다."));
+        return gymRepository.findByGymName(gymName).orElseThrow(()-> new GymNotFoundException("존재하지 않는 운동시설 입니다."));
     }
 
     @Override
     public Gym findByGymNumber(String gymNumber) {
-        return gymRepository.findByGymNumber(gymNumber).orElseThrow(()-> new EntityNotFoundException("존재하지 않는 운동시설 입니다."));
+        return gymRepository.findByGymNumber(gymNumber).orElseThrow(()-> new GymNotFoundException("존재하지 않는 운동시설 입니다."));
     }
 
     @Override
@@ -40,7 +41,7 @@ public class JpaGymDao implements GymDao{
 
     @Override
     public Gym find(Long gymSeq) {
-        Gym gym = gymRepository.findById(gymSeq).orElseThrow(() -> new EntityNotFoundException("운동시설을 찾을 수 없습니다."));
+        Gym gym = gymRepository.findById(gymSeq).orElseThrow(() -> new GymNotFoundException("운동시설을 찾을 수 없습니다."));
         return gym;
     }
 }
