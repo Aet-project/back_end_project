@@ -1,27 +1,17 @@
 package com.example.gymbo_back_end.member.service;
 
 import com.example.gymbo_back_end.core.entity.Member;
-import com.example.gymbo_back_end.jwt.JwtTokenProvider;
-import com.example.gymbo_back_end.jwt.TokenInfo;
-import com.example.gymbo_back_end.member.dao.JpaMemberDao;
-import com.example.gymbo_back_end.member.dto.ReissueTokensRequestDto;
+import com.example.gymbo_back_end.member.dao.MemberDao;
 import com.example.gymbo_back_end.member.dto.RequestMemberJoinDto;
-import com.example.gymbo_back_end.member.dto.ResponseMemberInfoDto;
-import com.example.gymbo_back_end.member.repository.MemberRepository;
+import com.example.gymbo_back_end.member.dto.response.ResponseMemberInfoDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,10 +20,7 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService{
 
     private final BCryptPasswordEncoder encoder;
-    private final JpaMemberDao jpaMemberDao;
-    private final MemberRepository memberRepository;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final MemberDao memberDao;
 
     @Override //회원가입
     public Member save(Member member) {
@@ -46,69 +33,12 @@ public class MemberServiceImpl implements MemberService{
                 .nickName(member.getNickName())
                 .roles(Collections.singletonList("USER"))
                 .build();
-      return jpaMemberDao.save(saveMember);
-    }
-    @Transactional //로그인
-    public Optional<TokenInfo> login(String memberId, String password) {
-
-        Member member = jpaMemberDao.findByMemberId(memberId);
-
-
-        if (encoder.matches(password,member.getPassword())==true) { //비밀번호가 암호화된 비민번호와 일치한지 확인
-
-            // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
-            // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(memberId, member.getPassword());
-
-            // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
-            // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
-            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
-            // 3. 인증 정보를 기반으로 JWT 토큰 생성
-            TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
-
-            member.setRefreshToken(tokenInfo.getRefreshToken());
-
-            return Optional.ofNullable(tokenInfo);
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    @Transactional // 토큰 재발급 로직
-    public TokenInfo reissueTokens(String refreshToken, ReissueTokensRequestDto reissueTokensRequestDto) {
-            Member member = memberRepository.findByMemberId(reissueTokensRequestDto.getMemberId())
-                    .orElseThrow(() -> new EntityNotFoundException("존재하는 회원이 없습니다."));
-
-            if (jwtTokenProvider.validateToken(refreshToken) &&
-                    refreshToken.equals(member.getRefreshToken())) {
-                TokenInfo tokenInfo = reissueTokensFromUser(member);
-                member.setRefreshToken(tokenInfo.getRefreshToken());
-                return tokenInfo;
-            }
-
-            throw new IllegalArgumentException("토큰 재발급 실패");
-    }
-
-    private TokenInfo reissueTokensFromUser(Member member) {
-
-        // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
-        // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(member.getMemberId(), member.getPassword());
-
-        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
-        // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
-
-
-        return jwtTokenProvider.generateToken(authentication);
+      return memberDao.save(saveMember);
     }
 
     @Override //단일 회원 조회
     public ResponseMemberInfoDto find(String memberId) {
-        Member member = jpaMemberDao.findByMemberId(memberId);
+        Member member = memberDao.findByMemberId(memberId);
         ResponseMemberInfoDto responseMemberInfoDto = ResponseMemberInfoDto.builder()
                 .memberId(member.getMemberId())
                 .nickName(member.getNickName())
@@ -119,23 +49,23 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public Member find(Long memberSeq) {
-        return jpaMemberDao.find(memberSeq);
+        return memberDao.find(memberSeq);
     }
 
     @Override
     public List<ResponseMemberInfoDto> findAll() {
-        return jpaMemberDao.findAll();
+        return memberDao.findAll();
     }
 
     @Override
     public ResponseMemberInfoDto update( RequestMemberJoinDto requestMemberJoinDto) {
-        Member member = jpaMemberDao.findByMemberId(requestMemberJoinDto.getMemberId());
+        Member member = memberDao.findByMemberId(requestMemberJoinDto.getMemberId());
         member.changeInfo(requestMemberJoinDto);
        return ResponseMemberInfoDto.buildDto(member);
     }
 
     @Override
     public void delete(String memberId) {
-        jpaMemberDao.delete(memberId);
+        memberDao.delete(memberId);
     }
 }

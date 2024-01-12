@@ -1,4 +1,4 @@
-package com.example.gymbo_back_end.member.dto;
+package com.example.gymbo_back_end.member.dto.response;
 
 import com.example.gymbo_back_end.core.entity.Member;
 import lombok.Builder;
