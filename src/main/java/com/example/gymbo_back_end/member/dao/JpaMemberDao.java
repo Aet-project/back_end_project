@@ -32,14 +32,9 @@ public class JpaMemberDao implements MemberDao{
     }
 
     @Override
-    public List<ResponseMemberInfoDto> findAll() {
-
+    public List<Member> findAll() {
         List<Member> members = memberRepository.findAll();
-        List<ResponseMemberInfoDto> responseMemberInfoDtos = new ArrayList<>();
-        for (Member member : members) {
-            responseMemberInfoDtos.add(ResponseMemberInfoDto.buildDto(member));
-        }
-        return responseMemberInfoDtos;
+        return members;
     }
 
     @Override

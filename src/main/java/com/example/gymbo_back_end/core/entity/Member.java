@@ -1,6 +1,7 @@
 package com.example.gymbo_back_end.core.entity;
 
-import com.example.gymbo_back_end.member.dto.RequestMemberJoinDto;
+import com.example.gymbo_back_end.auth.dto.AuthJoinRequestDto;
+import com.example.gymbo_back_end.member.dto.MemberRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -70,9 +71,9 @@ public class Member implements UserDetails {
         this.nickName = nickName;
     }
 
-    public void changeInfo(RequestMemberJoinDto requestMemberJoinDto) {
-        this.memberId = requestMemberJoinDto.getMemberId();
-        this.nickName = requestMemberJoinDto.getNickName();
+    public void changeInfo(MemberRequestDto memberRequestDto) {
+        this.memberId = memberRequestDto.getMemberId();
+        this.nickName = memberRequestDto.getNickName();
     }
 
     @Override

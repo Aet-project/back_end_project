@@ -2,7 +2,8 @@ package com.example.gymbo_back_end.member.service;
 
 import com.example.gymbo_back_end.core.entity.Member;
 import com.example.gymbo_back_end.member.dao.MemberDao;
-import com.example.gymbo_back_end.member.dto.RequestMemberJoinDto;
+import com.example.gymbo_back_end.auth.dto.AuthJoinRequestDto;
+import com.example.gymbo_back_end.member.dto.MemberRequestDto;
 import com.example.gymbo_back_end.member.dto.response.ResponseMemberInfoDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,28 +24,24 @@ public class MemberServiceImpl implements MemberService{
     private final MemberDao memberDao;
 
     @Override //회원가입
-    public Member save(Member member) {
+    public Member save(AuthJoinRequestDto authJoinRequestDto) {
 
-        String encode = encoder.encode(member.getPassword());
+        String encode = encoder.encode(authJoinRequestDto.getPassword());
 
-        Member saveMember = Member.builder()
-                .memberId(member.getMemberId())
+        Member member = Member.builder()
+                .memberId(authJoinRequestDto.getMemberId())
                 .password(encode)
-                .nickName(member.getNickName())
+                .nickName(authJoinRequestDto.getNickName())
                 .roles(Collections.singletonList("USER"))
                 .build();
-      return memberDao.save(saveMember);
+
+      return memberDao.save(member);
     }
 
     @Override //단일 회원 조회
-    public ResponseMemberInfoDto find(String memberId) {
+    public Member find(String memberId) {
         Member member = memberDao.findByMemberId(memberId);
-        ResponseMemberInfoDto responseMemberInfoDto = ResponseMemberInfoDto.builder()
-                .memberId(member.getMemberId())
-                .nickName(member.getNickName())
-                .build();
-
-        return responseMemberInfoDto;
+        return member;
     }
 
     @Override
@@ -53,15 +50,15 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public List<ResponseMemberInfoDto> findAll() {
+    public List<Member> findAll() {
         return memberDao.findAll();
     }
 
     @Override
-    public ResponseMemberInfoDto update( RequestMemberJoinDto requestMemberJoinDto) {
-        Member member = memberDao.findByMemberId(requestMemberJoinDto.getMemberId());
-        member.changeInfo(requestMemberJoinDto);
-       return ResponseMemberInfoDto.buildDto(member);
+    public Member update( MemberRequestDto memberRequestDto) {
+        Member member = memberDao.findByMemberId(memberRequestDto.getMemberId());
+        member.changeInfo(memberRequestDto);
+       return member;
     }
 
     @Override

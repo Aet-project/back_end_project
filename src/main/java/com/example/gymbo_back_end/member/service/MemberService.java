@@ -1,23 +1,24 @@
 package com.example.gymbo_back_end.member.service;
 
 import com.example.gymbo_back_end.core.entity.Member;
-import com.example.gymbo_back_end.member.dto.RequestMemberJoinDto;
+import com.example.gymbo_back_end.auth.dto.AuthJoinRequestDto;
+import com.example.gymbo_back_end.member.dto.MemberRequestDto;
 import com.example.gymbo_back_end.member.dto.response.ResponseMemberInfoDto;
 
 import java.util.List;
 
 public interface MemberService {
 
-    Member save(Member member);
+    Member save(AuthJoinRequestDto authJoinRequestDto);
 
 
-    ResponseMemberInfoDto find(String userEmail);
+    Member find(String userEmail);
 
     Member find(Long memberSeq);
 
-    List<ResponseMemberInfoDto> findAll();
+    List<Member> findAll();
 
-    ResponseMemberInfoDto update(RequestMemberJoinDto requestMemberJoinDto);
+    Member update(MemberRequestDto memberRequestDto);
 
     void delete(String memberId);
 

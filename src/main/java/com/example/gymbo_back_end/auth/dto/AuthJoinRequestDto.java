@@ -1,11 +1,11 @@
-package com.example.gymbo_back_end.member.dto;
+package com.example.gymbo_back_end.auth.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class RequestMemberJoinDto {
+public class AuthJoinRequestDto {
 
     private String memberId;
 

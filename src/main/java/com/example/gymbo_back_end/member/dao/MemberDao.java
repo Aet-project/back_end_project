@@ -11,7 +11,7 @@ public interface MemberDao {
 
     Member findByMemberId(String memberId);
 
-    List<ResponseMemberInfoDto> findAll();
+    List<Member> findAll();
 
     void delete(String memberId) ;
 
