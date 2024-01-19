@@ -16,6 +16,7 @@ public class ReservationJpaDao implements ReservationDao{
 
     private final ReservationRepository reservationRepository;
 
+
     @Override
     public List<Reservation> findReservationsByStartDay(String startDay) {
         return reservationRepository.findReservationsByStartDay(startDay);

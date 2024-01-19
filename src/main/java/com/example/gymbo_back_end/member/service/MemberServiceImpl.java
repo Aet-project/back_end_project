@@ -4,7 +4,6 @@ import com.example.gymbo_back_end.core.entity.Member;
 import com.example.gymbo_back_end.member.dao.MemberDao;
 import com.example.gymbo_back_end.auth.dto.AuthJoinRequestDto;
 import com.example.gymbo_back_end.member.dto.MemberRequestDto;
-import com.example.gymbo_back_end.member.dto.response.ResponseMemberInfoDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
