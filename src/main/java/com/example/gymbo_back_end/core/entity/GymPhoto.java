@@ -18,7 +18,7 @@ public class GymPhoto {
     @Column(name = "photo_seq")
     private Long photoSeq;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gym_seq")
     private Gym gym;
 

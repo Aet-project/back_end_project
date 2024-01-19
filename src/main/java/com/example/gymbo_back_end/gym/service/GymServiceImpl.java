@@ -4,9 +4,10 @@ import com.example.gymbo_back_end.core.commom.response.Address;
 import com.example.gymbo_back_end.core.entity.Gym;
 import com.example.gymbo_back_end.core.entity.GymPhoto;
 import com.example.gymbo_back_end.gym.dao.GymDao;
+import com.example.gymbo_back_end.gym.dao.GymPhotoDao;
 import com.example.gymbo_back_end.gym.dto.GymPhotoRequestDto;
 import com.example.gymbo_back_end.gym.dto.GymSaveRequestDto;
-import com.example.gymbo_back_end.gym.handler.FileHandler;
+import com.example.gymbo_back_end.gym.handler.GymFileHandler;
 import com.example.gymbo_back_end.gym.repository.GymPhotoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +25,8 @@ import java.util.List;
 public class GymServiceImpl implements GymService {
 
     private final GymDao gymDao;
-    private final GymPhotoRepository gymPhotoRepository;
-    private final FileHandler fileHandler;
+    private final GymPhotoDao gymPhotoDao;
+    private final GymFileHandler gymFileHandler;
 
 
 
@@ -78,13 +79,13 @@ public class GymServiceImpl implements GymService {
     public List<GymPhoto> saveGymPhoto(GymPhotoRequestDto gymPhotoRequestDto, List<MultipartFile> files) throws Exception {
 
         Gym gym = gymDao.findByGymNumber(gymPhotoRequestDto.getGymNumber());
-        List<GymPhoto> photoList = fileHandler.parseFileInfo(files);
+        List<GymPhoto> photoList = gymFileHandler.parseFileInfo(files);
 
         // 파일이 존재할 때에만 처리
         if(!photoList.isEmpty()) {
             for(GymPhoto photo : photoList) {
                 // 파일을 DB에 저장
-                GymPhoto gymPhoto = gymPhotoRepository.save(photo);
+                GymPhoto gymPhoto = gymPhotoDao.save(photo);
                 gym.addPhoto(gymPhoto);
             }
         }
@@ -96,13 +97,13 @@ public class GymServiceImpl implements GymService {
     public List<GymPhoto> updateGymPhoto(GymPhotoRequestDto gymPhotoRequestDto, List<MultipartFile> addFileList) throws Exception{
 
         Gym gym = gymDao.findByGymNumber(gymPhotoRequestDto.getGymNumber());
-        List<GymPhoto> photoList = fileHandler.parseFileInfo(addFileList);
+        List<GymPhoto> photoList = gymFileHandler.parseFileInfo(addFileList);
 
         // 파일이 존재할 때에만 처리
         if(!photoList.isEmpty()) {
             for(GymPhoto photo : photoList) {
                 // 파일을 DB에 저장
-                GymPhoto gymPhoto = gymPhotoRepository.save(photo);
+                GymPhoto gymPhoto = gymPhotoDao.save(photo);
                 gym.addPhoto(gymPhoto);
             }
         }
@@ -112,14 +113,14 @@ public class GymServiceImpl implements GymService {
     @Override
     public List<GymPhoto> findGymPhoto(String gymNumber) {
         Gym gym = gymDao.findByGymNumber(gymNumber);
-        List<GymPhoto> gymPhotosByGym = gymPhotoRepository.findGymPhotosByGym(gym);
+        List<GymPhoto> gymPhotosByGym = gymPhotoDao.findGymPhotosByGym(gym);
         return gymPhotosByGym;
     }
 
 
     @Override
     public GymPhoto findByGymPhotoSeq(Long gymPhotoSeq) {
-       return gymPhotoRepository.findById(gymPhotoSeq).orElseThrow(() -> new EntityNotFoundException("파일이 존재하지 않습니다."));
+       return gymPhotoDao.findById(gymPhotoSeq);
     }
 }
 

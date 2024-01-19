@@ -18,7 +18,7 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class FileHandler {
+public class GymFileHandler {
 
     public List<GymPhoto> parseFileInfo(
             List<MultipartFile> multipartFiles
