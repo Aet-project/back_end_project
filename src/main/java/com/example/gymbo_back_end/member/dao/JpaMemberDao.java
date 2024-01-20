@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -46,8 +47,21 @@ public class JpaMemberDao implements MemberDao{
     }
 
     @Override
+    public void delete(Long memberSeq) {
+        Member member = memberRepository.findById(memberSeq).orElseThrow(() -> new MemberNotFoundException("존재하지 않는 회원입니다."));
+        memberRepository.delete(member);
+    }
+
+    @Override
     public Member find(Long memberSeq) {
         Member member = memberRepository.findById(memberSeq).orElseThrow(() -> new MemberNotFoundException("사용자를 찾을 수 없습니다."));
         return member;
     }
+
+    @Override
+    public Boolean existsByMemberId(String memberId) {
+        return memberRepository.existsByMemberId(memberId);
+    }
+
+
 }

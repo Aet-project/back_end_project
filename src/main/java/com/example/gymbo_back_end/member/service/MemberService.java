@@ -25,6 +25,9 @@ public interface MemberService {
 
     void delete(String memberId);
 
+    void delete(Long memberSeq);
+
     List<MemberPhoto> saveMemberPhoto(MemberPhotoRequestDto memberPhotoRequestDto,List<MultipartFile> files) throws Exception;
 
+    List<MemberPhoto> findMemberPhoto(Long memberSeq);
 }

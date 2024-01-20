@@ -15,5 +15,9 @@ public interface MemberDao {
 
     void delete(String memberId) ;
 
+    void delete(Long memberSeq) ;
+
     Member find(Long memberSeq);
+
+    Boolean existsByMemberId(String memberId);
 }

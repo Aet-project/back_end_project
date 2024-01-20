@@ -1,8 +1,8 @@
 package com.example.gymbo_back_end.member.service;
 
+import com.example.gymbo_back_end.core.commom.exception.member.MemberIdAlreadyExistsException;
 import com.example.gymbo_back_end.core.entity.Member;
 import com.example.gymbo_back_end.core.entity.MemberPhoto;
-import com.example.gymbo_back_end.gym.handler.GymFileHandler;
 import com.example.gymbo_back_end.member.controller.MemberRoles;
 import com.example.gymbo_back_end.member.dao.MemberDao;
 import com.example.gymbo_back_end.auth.dto.AuthJoinRequestDto;
@@ -43,7 +43,13 @@ public class MemberServiceImpl implements MemberService{
                 .roles(Collections.singletonList(MemberRoles.USER.getRole()))
                 .build();
 
-      return memberDao.save(member);
+        Boolean result = memberDao.existsByMemberId(member.getMemberId());
+
+        if (result) {
+            throw new MemberIdAlreadyExistsException("아이디가 존재합니다.");
+        }
+
+        return memberDao.save(member);
     }
 
     @Override //단일 회원 조회
@@ -74,6 +80,11 @@ public class MemberServiceImpl implements MemberService{
         memberDao.delete(memberId);
     }
 
+    @Override
+    public void delete(Long memberSeq) {
+        memberDao.delete(memberSeq);
+    }
+
     @Override //회원 이미지 저장
     public List<MemberPhoto> saveMemberPhoto(MemberPhotoRequestDto memberPhotoRequestDto,List<MultipartFile> files) throws Exception{
 
@@ -83,6 +94,13 @@ public class MemberServiceImpl implements MemberService{
             memberPhotoRepository.save(memberPhoto);
             memberPhoto.addMember(member);
         }
+        return memberPhotos;
+    }
+
+    @Override // 회원 이미지 조회
+    public List<MemberPhoto> findMemberPhoto(Long memberSeq) {
+        Member member = memberDao.find(memberSeq);
+        List<MemberPhoto> memberPhotos = memberPhotoRepository.findMemberPhotosByMember(member);
         return memberPhotos;
     }
 }
