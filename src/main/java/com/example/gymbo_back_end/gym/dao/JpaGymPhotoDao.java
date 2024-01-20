@@ -29,4 +29,9 @@ public class JpaGymPhotoDao implements GymPhotoDao{
     public GymPhoto save(GymPhoto gymPhoto) {
         return gymPhotoRepository.save(gymPhoto);
     }
+
+    @Override
+    public void delete(GymPhoto gymPhoto) {
+        gymPhotoRepository.delete(gymPhoto);
+    }
 }

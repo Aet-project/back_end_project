@@ -5,10 +5,12 @@ import com.example.gymbo_back_end.core.commom.response.AetResponse;
 import com.example.gymbo_back_end.core.commom.response.model.ResBodyModel;
 import com.example.gymbo_back_end.core.entity.Gym;
 import com.example.gymbo_back_end.core.entity.GymPhoto;
+import com.example.gymbo_back_end.gym.dao.GymPhotoDao;
 import com.example.gymbo_back_end.gym.dto.GymPhotoRequestDto;
 import com.example.gymbo_back_end.gym.dto.GymResponseDto;
 import com.example.gymbo_back_end.gym.dto.GymSaveRequestDto;
 import com.example.gymbo_back_end.gym.repository.GymPhotoRepository;
+import com.example.gymbo_back_end.gym.service.GymPhotoService;
 import com.example.gymbo_back_end.gym.service.GymService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +35,9 @@ import java.util.Map;
 public class GymController {
 
 
-    public final GymService gymService;
-    public final GymPhotoRepository gymPhotoRepository;
+    private final GymService gymService;
+    private final GymPhotoService gymPhotoService;
+    private final GymPhotoDao gymPhotoDao;
     private static final String UPLOAD_DIR = "images";
 
     @PostMapping("/save") //운동 시설 등록
@@ -47,14 +50,14 @@ public class GymController {
         Gym gym = gymService.save(gymSaveRequestDto);
         GymResponseDto gymResponseDto = GymResponseDto.buildDto(gym);
 
-        return AetResponse.toResponse(SuccessCode.SUCCESS,gym);
+        return AetResponse.toResponse(SuccessCode.SUCCESS,gymResponseDto);
 
     }
 
     @PostMapping("/file_save") //운동시설 사진 등록
     public ResponseEntity<ResBodyModel> gymPhotoSave(@RequestPart(required = false)  List<MultipartFile> files
             ,@RequestPart GymPhotoRequestDto gymPhotoRequestDto ) throws Exception {
-        List<GymPhoto> gymPhotos = gymService.saveGymPhoto(gymPhotoRequestDto, files);
+        List<GymPhoto> gymPhotos = gymPhotoService.saveGymPhoto(gymPhotoRequestDto, files);
 
 
 
@@ -65,12 +68,12 @@ public class GymController {
     public ResponseEntity<ResBodyModel> gymPhotoUpdate(@RequestPart(required = false) List<MultipartFile> files
             ,@RequestPart GymPhotoRequestDto gymPhotoRequestDto) throws Exception {
 
-        List<GymPhoto> gymPhoto = gymService.findGymPhoto(gymPhotoRequestDto.getGymNumber());
+        List<GymPhoto> gymPhoto = gymPhotoService.findGymPhoto(gymPhotoRequestDto.getGymNumber());
         for (GymPhoto photo : gymPhoto) {
-            gymPhotoRepository.delete(photo);
+            gymPhotoDao.delete(photo);
         }
 
-        List<GymPhoto> gymPhotos = gymService.saveGymPhoto(gymPhotoRequestDto, files);
+        List<GymPhoto> gymPhotos = gymPhotoService.saveGymPhoto(gymPhotoRequestDto, files);
 
         return AetResponse.toResponse(SuccessCode.SUCCESS,gymPhotos);
     }
@@ -78,7 +81,7 @@ public class GymController {
     @GetMapping(value = "/file/{id}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE}) //사진 번호로 사진 조회
     public ResponseEntity<ResBodyModel> fileFind(@PathVariable Long id) throws IOException {
 
-        GymPhoto gymPhoto = gymService.findByGymPhotoSeq(id);
+        GymPhoto gymPhoto = gymPhotoService.findByGymPhotoSeq(id);
 
          /*
         new File(""): 기본적으로 현재 작업 디렉터리를 참조하는 빈 문자열로 새 File 객체를 생성합니다.
@@ -100,7 +103,7 @@ public class GymController {
     @GetMapping(value = "/files/{gym_seq}", produces = {MediaType.APPLICATION_JSON_VALUE}) // 운동시설로 사진 조회
     public ResponseEntity<ResBodyModel> getAllImages(@PathVariable Long gym_seq) throws IOException {
         Gym gym = gymService.find(gym_seq);
-        List<GymPhoto> gymPhotos = gymPhotoRepository.findGymPhotosByGym(gym);
+        List<GymPhoto> gymPhotos = gymPhotoDao.findGymPhotosByGym(gym);
         List<Map<String, Object>> imageList = new ArrayList<>();
 
         for (GymPhoto gymPhoto : gymPhotos) {

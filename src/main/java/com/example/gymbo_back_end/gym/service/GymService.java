@@ -20,11 +20,4 @@ public interface GymService {
 
     Gym update(GymSaveRequestDto gymSaveRequestDto);
 
-    List<GymPhoto> saveGymPhoto(GymPhotoRequestDto gymPhotoRequestDto, List<MultipartFile> files) throws Exception;
-
-    List<GymPhoto> findGymPhoto(String gymNumber);
-
-    List<GymPhoto> updateGymPhoto(GymPhotoRequestDto gymPhotoRequestDto, List<MultipartFile> addFileList)throws Exception;
-
-    GymPhoto findByGymPhotoSeq(Long gymPhotoSeq);
 }

@@ -13,5 +13,5 @@ public interface GymPhotoDao {
 
     GymPhoto save(GymPhoto gymPhoto);
 
-
+    void delete(GymPhoto gymPhoto);
 }

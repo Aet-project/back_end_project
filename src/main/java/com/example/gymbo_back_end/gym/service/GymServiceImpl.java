@@ -74,53 +74,5 @@ public class GymServiceImpl implements GymService {
         return gym;
     }
 
-    @Override
-    @Transactional
-    public List<GymPhoto> saveGymPhoto(GymPhotoRequestDto gymPhotoRequestDto, List<MultipartFile> files) throws Exception {
-
-        Gym gym = gymDao.findByGymNumber(gymPhotoRequestDto.getGymNumber());
-        List<GymPhoto> photoList = gymFileHandler.parseFileInfo(files);
-
-        // 파일이 존재할 때에만 처리
-        if(!photoList.isEmpty()) {
-            for(GymPhoto photo : photoList) {
-                // 파일을 DB에 저장
-                GymPhoto gymPhoto = gymPhotoDao.save(photo);
-                gym.addPhoto(gymPhoto);
-            }
-        }
-
-        return photoList;
-    }
-    @Override
-    @Transactional
-    public List<GymPhoto> updateGymPhoto(GymPhotoRequestDto gymPhotoRequestDto, List<MultipartFile> addFileList) throws Exception{
-
-        Gym gym = gymDao.findByGymNumber(gymPhotoRequestDto.getGymNumber());
-        List<GymPhoto> photoList = gymFileHandler.parseFileInfo(addFileList);
-
-        // 파일이 존재할 때에만 처리
-        if(!photoList.isEmpty()) {
-            for(GymPhoto photo : photoList) {
-                // 파일을 DB에 저장
-                GymPhoto gymPhoto = gymPhotoDao.save(photo);
-                gym.addPhoto(gymPhoto);
-            }
-        }
-        return photoList;
-    }
-
-    @Override
-    public List<GymPhoto> findGymPhoto(String gymNumber) {
-        Gym gym = gymDao.findByGymNumber(gymNumber);
-        List<GymPhoto> gymPhotosByGym = gymPhotoDao.findGymPhotosByGym(gym);
-        return gymPhotosByGym;
-    }
-
-
-    @Override
-    public GymPhoto findByGymPhotoSeq(Long gymPhotoSeq) {
-       return gymPhotoDao.findById(gymPhotoSeq);
-    }
 }
 
