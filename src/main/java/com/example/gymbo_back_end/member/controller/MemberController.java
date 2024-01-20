@@ -5,16 +5,28 @@ import com.example.gymbo_back_end.core.commom.response.AetResponse;
 import com.example.gymbo_back_end.core.commom.response.model.ResBodyModel;
 import com.example.gymbo_back_end.auth.dto.AuthJoinRequestDto;
 import com.example.gymbo_back_end.core.entity.Member;
+import com.example.gymbo_back_end.core.entity.MemberPhoto;
+import com.example.gymbo_back_end.gym.dto.GymPhotoRequestDto;
+import com.example.gymbo_back_end.member.dto.MemberPhotoRequestDto;
 import com.example.gymbo_back_end.member.dto.MemberRequestDto;
 import com.example.gymbo_back_end.member.dto.response.ResponseMemberInfoDto;
 import com.example.gymbo_back_end.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/members")
@@ -61,6 +73,41 @@ public class MemberController {
         return AetResponse.toResponse(SuccessCode.SUCCESS);
     }
 
+    @DeleteMapping("delete/{memberSeq}") //회원 삭제
+    public ResponseEntity<ResBodyModel> delete(@PathVariable Long memberSeq) {
+        memberService.delete(memberSeq);
+        return AetResponse.toResponse(SuccessCode.SUCCESS);
+    }
+    @PostMapping("/file_save")
+    public ResponseEntity<ResBodyModel> memberPhotoSave(@RequestPart(required = false)  List<MultipartFile> files
+            ,@RequestPart MemberPhotoRequestDto memberPhotoRequestDto) throws Exception {
+
+        List<MemberPhoto> memberPhotos = memberService.saveMemberPhoto(memberPhotoRequestDto,files);
+        return AetResponse.toResponse(SuccessCode.SUCCESS,memberPhotos);
+    }
+
+    @GetMapping(value = "/file_find/{memberSeq}",produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<ResBodyModel> memberPhotoFind(@PathVariable("memberSeq") Long memberSeq ) throws Exception {
+        List<MemberPhoto> memberPhotos = memberService.findMemberPhoto(memberSeq);
+        List<Map<String,Object>> imageList = new ArrayList<>();
+
+        for (MemberPhoto memberPhoto : memberPhotos) {
+            String absolutePath = new File("").getAbsolutePath() + File.separator + File.separator;
+            String path = memberPhoto.getFilePath();
+            InputStream imageStream = new FileInputStream(absolutePath + path);
+            byte[] imageByteArray = IOUtils.toByteArray(imageStream);
+            imageStream.close();
+
+            String base64EncodedImage = Base64.encodeBase64String(imageByteArray);
+
+            Map<String, Object> imageInfo = new HashMap<>();
+            imageInfo.put("fileName",memberPhoto.getOrigFileName());
+            imageInfo.put("imageBytes",base64EncodedImage);
+            imageList.add(imageInfo);
+        }
+
+        return AetResponse.toResponse(SuccessCode.SUCCESS,imageList);
+    }
 
     @PostMapping("/test")
     public String test() {

@@ -1,6 +1,7 @@
 package com.example.gymbo_back_end.member.controller;
 
 
+import com.example.gymbo_back_end.core.commom.exception.member.MemberIdAlreadyExistsException;
 import com.example.gymbo_back_end.core.commom.exception.member.MemberNotFoundException;
 import com.example.gymbo_back_end.core.commom.response.AetResponse;
 import com.example.gymbo_back_end.core.commom.response.model.ResBodyModel;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
-@Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice(assignableTypes = MemberController.class)
 public class MemberExceptionController {
 
@@ -23,4 +23,6 @@ public class MemberExceptionController {
         log.error("[MemberExceptionHandler]MemberNotFoundException Message = {}, class = {}", e.getMessage(), e.getClass());
         return AetResponse.toResponse(MemberErrorCode.Member_NOT_FOUND);
     }
+
+
 }
