@@ -23,6 +23,10 @@ public class GymPhotoServiceImpl implements GymPhotoService{
     private final GymDao gymDao;
     private final GymFileHandler gymFileHandler;
     private final GymPhotoDao gymPhotoDao;
+
+    /**
+     * 운동시설 사진 저장
+     * */
     @Override
     @Transactional
     public List<GymPhoto> saveGymPhoto(GymPhotoRequestDto gymPhotoRequestDto, List<MultipartFile> files) throws Exception {
@@ -59,6 +63,9 @@ public class GymPhotoServiceImpl implements GymPhotoService{
 //        return photoList;
 //    }
 
+    /**
+     * 운동 시설 사진 사업자 번호로 조회
+     * */
     @Override
     public List<GymPhoto> findGymPhoto(String gymNumber) {
         Gym gym = gymDao.findByGymNumber(gymNumber);
@@ -67,11 +74,17 @@ public class GymPhotoServiceImpl implements GymPhotoService{
     }
 
 
+    /**
+     * 운동시설 사진 seq 로 조회
+     * */
     @Override
     public GymPhoto findByGymPhotoSeq(Long gymPhotoSeq) {
         return gymPhotoDao.findById(gymPhotoSeq);
     }
 
+    /**
+     * 운동시설 사진 삭제
+     * */
     @Override
     public void gymPhotoDelete(GymPhoto gymPhoto) {
         gymPhotoDao.delete(gymPhoto);

@@ -38,9 +38,11 @@ public class GymController {
     private final GymService gymService;
     private final GymPhotoService gymPhotoService;
     private final GymPhotoDao gymPhotoDao;
-    private static final String UPLOAD_DIR = "images";
 
-    @PostMapping("/save") //운동 시설 등록
+    /**
+     * 운동시설 등록
+     * */
+    @PostMapping("/save")
     public ResponseEntity<ResBodyModel> gymRegistration(@RequestBody GymSaveRequestDto gymSaveRequestDto) {
 
         log.info("gymSaveRequestDto ={}",gymSaveRequestDto);
@@ -64,6 +66,9 @@ public class GymController {
         return AetResponse.toResponse(SuccessCode.SUCCESS,gymPhotos);
     }
 
+    /**
+     * 운동시설 사진 수정
+     * */
     @PostMapping("/file_update") // 운동 시설 사진 업데이트
     public ResponseEntity<ResBodyModel> gymPhotoUpdate(@RequestPart(required = false) List<MultipartFile> files
             ,@RequestPart GymPhotoRequestDto gymPhotoRequestDto) throws Exception {
@@ -78,12 +83,15 @@ public class GymController {
         return AetResponse.toResponse(SuccessCode.SUCCESS,gymPhotos);
     }
 
-    @GetMapping(value = "/file/{id}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE}) //사진 번호로 사진 조회
+    /**
+     * 운동시설 사진 seq로 조회
+     * */
+    @GetMapping(value = "/file/{id}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
     public ResponseEntity<ResBodyModel> fileFind(@PathVariable Long id) throws IOException {
 
         GymPhoto gymPhoto = gymPhotoService.findByGymPhotoSeq(id);
 
-         /*
+         /**
         new File(""): 기본적으로 현재 작업 디렉터리를 참조하는 빈 문자열로 새 File 객체를 생성합니다.
         .getAbsolutePath(): 현재 작업 디렉터리의 절대 경로인 File 개체의 절대 경로 이름을 검색합니다.
         + File.separator + File.separator: 획득한 절대 경로를 파일 구분 기호와 연결합니다.
@@ -100,7 +108,10 @@ public class GymController {
         return AetResponse.toResponse(SuccessCode.SUCCESS,imageByteArray);
     }
 
-    @GetMapping(value = "/files/{gym_seq}", produces = {MediaType.APPLICATION_JSON_VALUE}) // 운동시설로 사진 조회
+    /**
+     * 운동시설번호로 사진 조회
+     * */
+    @GetMapping(value = "/files/{gym_seq}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResBodyModel> getAllImages(@PathVariable Long gym_seq) throws IOException {
         Gym gym = gymService.find(gym_seq);
         List<GymPhoto> gymPhotos = gymPhotoDao.findGymPhotosByGym(gym);
@@ -125,7 +136,40 @@ public class GymController {
 
         return AetResponse.toResponse(SuccessCode.SUCCESS, imageList);
     }
-    @GetMapping("/{gymName}") //운동시설 이름으로 조회
+
+    /**
+     * 운동시설 seq로 사진 조회
+     * */
+    @PostMapping(value = "/files", produces = {MediaType.APPLICATION_JSON_VALUE}) //
+    public ResponseEntity<ResBodyModel> getAllImages(@RequestBody GymPhotoRequestDto gymPhotoRequestDto) throws IOException {
+        Gym gym = gymService.findByGymNumber(gymPhotoRequestDto.getGymNumber());
+        List<GymPhoto> gymPhotos = gymPhotoDao.findGymPhotosByGym(gym);
+        List<Map<String, Object>> imageList = new ArrayList<>();
+
+        for (GymPhoto gymPhoto : gymPhotos) {
+
+            String absolutePath = new File("").getAbsolutePath() + File.separator + File.separator;
+            String path = gymPhoto.getFilePath();
+            InputStream imageStream = new FileInputStream(absolutePath + path);
+            byte[] imageByteArray = IOUtils.toByteArray(imageStream);
+            imageStream.close();
+
+            // 이미지 바이트 배열을 Base64로 인코딩하여 문자열로 변환
+            String base64EncodedImage = Base64.encodeBase64String(imageByteArray);
+
+            Map<String, Object> imageInfo = new HashMap<>();
+            imageInfo.put("fileName", gymPhoto.getOrigFileName());
+            imageInfo.put("imageBytes", base64EncodedImage);
+            imageList.add(imageInfo);
+        }
+
+        return AetResponse.toResponse(SuccessCode.SUCCESS, imageList);
+    }
+
+    /**
+     * 운동시설명으로 조회
+     * */
+    @GetMapping("/{gymName}")
     public ResponseEntity<ResBodyModel> findByGymName ( @PathVariable String gymName) {
 
         log.info("gymName = {}",gymName);
@@ -137,7 +181,10 @@ public class GymController {
 
     }
 
-    @GetMapping("/all") // 운동시설 전체 조회
+    /**
+     * 운동시설 전체 조회
+     * */
+    @GetMapping("/all")
     public ResponseEntity<ResBodyModel> findAllGym () {
 
         List<Gym> gyms = gymService.findAll();
@@ -150,6 +197,9 @@ public class GymController {
         return AetResponse.toResponse(SuccessCode.SUCCESS,gymResponseDtoList);
     }
 
+    /**
+     * 운동시설 업데이트
+     * */
     @PatchMapping //운동시설 업데이트
     private ResponseEntity<ResBodyModel> updateGym(@RequestBody GymSaveRequestDto gymSaveRequestDto) {
         Gym gym = gymService.update(gymSaveRequestDto);

@@ -20,4 +20,6 @@ public interface GymService {
 
     Gym update(GymSaveRequestDto gymSaveRequestDto);
 
+    Gym findByGymNumber(String gymNumber);
+
 }
