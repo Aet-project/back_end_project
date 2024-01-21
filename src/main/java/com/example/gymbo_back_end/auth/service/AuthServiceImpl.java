@@ -1,13 +1,15 @@
 package com.example.gymbo_back_end.auth.service;
 
+import com.example.gymbo_back_end.auth.dto.AuthJoinRequestDto;
 import com.example.gymbo_back_end.core.commom.exception.auth.IllegalAccessTokenException;
 import com.example.gymbo_back_end.core.commom.exception.auth.InvalidPasswordException;
+import com.example.gymbo_back_end.core.commom.exception.member.MemberIdAlreadyExistsException;
 import com.example.gymbo_back_end.core.entity.Member;
 import com.example.gymbo_back_end.jwt.JwtTokenProvider;
 import com.example.gymbo_back_end.jwt.TokenInfo;
+import com.example.gymbo_back_end.member.controller.MemberRoles;
 import com.example.gymbo_back_end.member.dao.MemberDao;
 import com.example.gymbo_back_end.member.dto.ReissueTokensRequestDto;
-import com.example.gymbo_back_end.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,7 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -29,6 +31,23 @@ public class AuthServiceImpl implements AuthService{
     private final MemberDao memberDao;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
+
+    @Override //회원가입
+    public Member save(AuthJoinRequestDto authJoinRequestDto) {
+
+        String encode = encoder.encode(authJoinRequestDto.getPassword());
+
+        Member member = Member.builder()
+                .memberId(authJoinRequestDto.getMemberId())
+                .password(encode)
+                .nickName(authJoinRequestDto.getNickName())
+                .roles(Collections.singletonList(MemberRoles.USER.getRole()))
+                .build();
+
+        existsByMemberId(member.getMemberId());
+
+        return memberDao.save(member);
+    }
 
 
     @Transactional //로그인
@@ -71,6 +90,19 @@ public class AuthServiceImpl implements AuthService{
 
         throw new IllegalAccessTokenException("토큰 요청 정보가 올바르지 않습니다.", 402);
     }
+
+    /**
+     * 아이디 중복 검사
+     * */
+    public void existsByMemberId(String memberId) {
+
+        Boolean result = memberDao.existsByMemberId(memberId);
+        if (result) {
+            throw new MemberIdAlreadyExistsException("아이디가 존재합니다.");
+        }
+
+    }
+
 
     private TokenInfo reissueTokensFromUser(Member member) {
 

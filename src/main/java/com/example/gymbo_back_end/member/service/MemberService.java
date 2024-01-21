@@ -12,8 +12,6 @@ import java.util.List;
 
 public interface MemberService {
 
-    Member save(AuthJoinRequestDto authJoinRequestDto);
-
 
     Member find(String userEmail);
 
@@ -30,4 +28,6 @@ public interface MemberService {
     List<MemberPhoto> saveMemberPhoto(MemberPhotoRequestDto memberPhotoRequestDto,List<MultipartFile> files) throws Exception;
 
     List<MemberPhoto> findMemberPhoto(Long memberSeq);
+
+    void memberPhotoDelete(MemberPhoto memberPhoto);
 }

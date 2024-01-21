@@ -6,10 +6,10 @@ import com.example.gymbo_back_end.core.entity.MemberPhoto;
 import com.example.gymbo_back_end.member.controller.MemberRoles;
 import com.example.gymbo_back_end.member.dao.MemberDao;
 import com.example.gymbo_back_end.auth.dto.AuthJoinRequestDto;
+import com.example.gymbo_back_end.member.dao.MemberPhotoDao;
 import com.example.gymbo_back_end.member.dto.MemberPhotoRequestDto;
 import com.example.gymbo_back_end.member.dto.MemberRequestDto;
 import com.example.gymbo_back_end.member.handler.MemberFileHandler;
-import com.example.gymbo_back_end.member.repository.MemberPhotoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,28 +29,7 @@ public class MemberServiceImpl implements MemberService{
     private final BCryptPasswordEncoder encoder;
     private final MemberDao memberDao;
     private final MemberFileHandler memberFileHandler;
-    private final MemberPhotoRepository memberPhotoRepository;
-
-    @Override //회원가입
-    public Member save(AuthJoinRequestDto authJoinRequestDto) {
-
-        String encode = encoder.encode(authJoinRequestDto.getPassword());
-
-        Member member = Member.builder()
-                .memberId(authJoinRequestDto.getMemberId())
-                .password(encode)
-                .nickName(authJoinRequestDto.getNickName())
-                .roles(Collections.singletonList(MemberRoles.USER.getRole()))
-                .build();
-
-        Boolean result = memberDao.existsByMemberId(member.getMemberId());
-
-        if (result) {
-            throw new MemberIdAlreadyExistsException("아이디가 존재합니다.");
-        }
-
-        return memberDao.save(member);
-    }
+    private final MemberPhotoDao memberPhotoDao;
 
     @Override //단일 회원 조회
     public Member find(String memberId) {
@@ -91,7 +70,7 @@ public class MemberServiceImpl implements MemberService{
         List<MemberPhoto> memberPhotos = memberFileHandler.parseFileInfo(files);
         Member member = memberDao.findByMemberId(memberPhotoRequestDto.getMemberId());
         for (MemberPhoto memberPhoto : memberPhotos) {
-            memberPhotoRepository.save(memberPhoto);
+            memberPhotoDao.saveMemberPhoto(memberPhoto);
             memberPhoto.addMember(member);
         }
         return memberPhotos;
@@ -100,7 +79,14 @@ public class MemberServiceImpl implements MemberService{
     @Override // 회원 이미지 조회
     public List<MemberPhoto> findMemberPhoto(Long memberSeq) {
         Member member = memberDao.find(memberSeq);
-        List<MemberPhoto> memberPhotos = memberPhotoRepository.findMemberPhotosByMember(member);
+        List<MemberPhoto> memberPhotos = memberPhotoDao.findMemberPhotosByMember(member);
         return memberPhotos;
     }
+
+    @Override
+    public void memberPhotoDelete(MemberPhoto memberPhoto) {
+        memberPhotoDao.memberPhotoDelete(memberPhoto);
+    }
+
+
 }

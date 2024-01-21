@@ -24,12 +24,11 @@ import java.util.Collections;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final MemberService memberService;
     private final AuthService authService;
 
     @PostMapping("/join") //회원 가입
     public ResponseEntity<ResBodyModel> join(@RequestBody AuthJoinRequestDto authLoginRequestDto) {
-        Member savedMember = memberService.save(authLoginRequestDto);
+        Member savedMember = authService.save(authLoginRequestDto);
         log.info("savedMember = {}",savedMember);
         return AetResponse.toResponse(SuccessCode.SUCCESS);
     }
