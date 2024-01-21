@@ -1,5 +1,6 @@
 package com.example.gymbo_back_end.order.dao;
 
+import com.example.gymbo_back_end.core.commom.exception.order.OrderNotFoundException;
 import com.example.gymbo_back_end.core.entity.Member;
 import com.example.gymbo_back_end.core.entity.Order;
 import com.example.gymbo_back_end.order.repository.OrderRepository;
@@ -25,7 +26,7 @@ public class OrderJpaDao implements OrderDao {
     @Override
     public Order findOne(Long orderSeq) {
         Order order = orderRepository.findById(orderSeq).orElseThrow(()
-                -> new EntityNotFoundException("존재하지 않는 주문입니다."));
+                -> new OrderNotFoundException("존재하지 않는 주문입니다."));
         return order;
     }
 
