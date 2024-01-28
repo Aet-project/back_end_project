@@ -24,6 +24,13 @@ spring:
             maxFileSize: 10MB
             maxRequestSize: 20MB
 
+payment:
+    toss:
+        test_client_api_key : test_ck_DnyRpQWGrNa7onxBlEWLVKwv1M9E
+        test_secrete_api_key : test_sk_4yKeq5bgrp2M7oylRvDp3GX0lzW6
+        success_url : "http://localhost:8080/payments/toss/success"
+        fail_url: "http://localhost:8080/payments/toss/fail"
+
 jwt:
   secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
 

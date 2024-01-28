@@ -12,6 +12,7 @@ import com.example.gymbo_back_end.gym.dto.GymSaveRequestDto;
 import com.example.gymbo_back_end.gym.repository.GymPhotoRepository;
 import com.example.gymbo_back_end.gym.service.GymPhotoService;
 import com.example.gymbo_back_end.gym.service.GymService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -40,7 +41,7 @@ public class GymController {
     private final GymPhotoDao gymPhotoDao;
 
     /**
-     * 운동시설 등록
+     * 운동시설 등록 localhost8080/gyms/save
      * */
     @PostMapping("/save")
     public ResponseEntity<ResBodyModel> gymRegistration(@RequestBody GymSaveRequestDto gymSaveRequestDto) {
@@ -48,11 +49,10 @@ public class GymController {
         log.info("gymSaveRequestDto ={}",gymSaveRequestDto);
         log.info("gymSaveRequestDtoManNumber = {}",gymSaveRequestDto.getManagerNumber());
 
-
         Gym gym = gymService.save(gymSaveRequestDto);
         GymResponseDto gymResponseDto = GymResponseDto.buildDto(gym);
 
-        return AetResponse.toResponse(SuccessCode.SUCCESS,gymResponseDto);
+        return AetResponse.toResponse(SuccessCode.SUCCESS, gymResponseDto);
 
     }
 
@@ -167,7 +167,7 @@ public class GymController {
     }
 
     /**
-     * 운동시설명으로 조회
+     * 운동시설명으로 조회 localhost8080/gyms/서울유나이티드
      * */
     @GetMapping("/{gymName}")
     public ResponseEntity<ResBodyModel> findByGymName ( @PathVariable String gymName) {

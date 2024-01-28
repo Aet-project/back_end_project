@@ -43,4 +43,10 @@ public class DailyTicketController {
 
         return AetResponse.toResponse(SuccessCode.SUCCESS,responseDtoList);
     }
+
+    /**
+     * 주문번호으로 티켓 조회
+     * */
+
+
 }

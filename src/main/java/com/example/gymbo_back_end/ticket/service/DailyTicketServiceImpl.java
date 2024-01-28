@@ -75,7 +75,7 @@ public class DailyTicketServiceImpl implements DailyTicketService{
 
 
     //회원번호로 구매한 티켓 조회
-    /*
+    /**
      * 1. 회원번호로 주문 번호 조회
      * 2. 주문번호로 주문 상품 조회
      * 3. 해당 주문 상품에 티멧 번호 조회
@@ -89,10 +89,18 @@ public class DailyTicketServiceImpl implements DailyTicketService{
         return byMember;
     }
 
+    /**
+     * 운동시설로 티켓 조회
+     * */
     @Override
     public List<DailyTicket> findDailyTicketsByGym(Gym gym) {
         return ticketDao.findDailyTicketsByGym(gym);
     }
+
+    /**
+     * 주문번호으로 티켓 조회
+     *
+     * */
 
 
 }
