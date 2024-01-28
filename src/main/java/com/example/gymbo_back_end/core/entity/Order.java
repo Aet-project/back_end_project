@@ -35,8 +35,7 @@ public class Order {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "order_created_at")
-    protected Date createdAt;
-
+    private Date createdAt;
     public void addOrderItem(OrderItem orderItem) {
         orderItems.add(orderItem);
         orderItem.setOrder(this);

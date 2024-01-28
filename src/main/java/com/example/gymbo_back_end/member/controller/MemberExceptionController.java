@@ -19,10 +19,8 @@ public class MemberExceptionController {
 
     @ExceptionHandler(MemberNotFoundException.class)
     public ResponseEntity<ResBodyModel> handleMemberNotFoundException(MemberNotFoundException e) {
-
         log.error("[MemberExceptionHandler]MemberNotFoundException Message = {}, class = {}", e.getMessage(), e.getClass());
         return AetResponse.toResponse(MemberErrorCode.Member_NOT_FOUND);
     }
-
 
 }

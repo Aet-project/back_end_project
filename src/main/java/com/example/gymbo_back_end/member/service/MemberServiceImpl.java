@@ -26,7 +26,6 @@ import java.util.List;
 @Transactional
 public class MemberServiceImpl implements MemberService{
 
-    private final BCryptPasswordEncoder encoder;
     private final MemberDao memberDao;
     private final MemberFileHandler memberFileHandler;
     private final MemberPhotoDao memberPhotoDao;

@@ -30,6 +30,9 @@ public class OrderController {
     private final DailyTicketService dailyTicketService;
     private final OrderItemService orderItemService;
 
+    /**
+     * 주문 저장
+     * */
     @PostMapping
     public ResponseEntity<ResBodyModel> orderSave(@RequestBody OrderRequestDto orderRequestDto) {
 
@@ -48,13 +51,20 @@ public class OrderController {
         return AetResponse.toResponse(SuccessCode.SUCCESS,orderResponseDto);
 
     }
-    @GetMapping("/{orderSeq}") //주문번호로 주문한 회원 조회
+
+    /**
+     * 주문 seq 로 회원 조회
+     * */
+    @GetMapping("/{orderSeq}")
     public ResponseEntity<ResBodyModel> orderFindMember(@PathVariable Long orderSeq) {
         FindOneResponseDto findOneResponseDto = orderService.OrderFindMember(orderSeq);
         return AetResponse.toResponse(SuccessCode.SUCCESS,findOneResponseDto);
     }
 
-    @GetMapping("/member/{memberSeq}") //회원번호로 주문 조회
+    /**
+     *  회원 seq 로 주문 조회
+     * */
+    @GetMapping("/member/{memberSeq}")
     public ResponseEntity<ResBodyModel> memberFindOrder(@PathVariable Long memberSeq){
         List<Order> orders = orderService.memberFindOrders(memberSeq);
 
@@ -73,7 +83,10 @@ public class OrderController {
         return AetResponse.toResponse(SuccessCode.SUCCESS,ordersFindByMemberResponseDtoList);
     }
 
-    @GetMapping("/order_item/{orderSeq}") //주문 번호로 주문 상품 조회
+    /**
+     * 주문 seq 로 주문 상품 조회
+     * */
+    @GetMapping("/order_item/{orderSeq}")
     public ResponseEntity<ResBodyModel> orderItemFindOrder(@PathVariable Long orderSeq) {
         Order order = orderService.find(orderSeq);
         List<FindByMemberResponseDto> ordersFindByMemberResponseDtoList = new ArrayList<>();

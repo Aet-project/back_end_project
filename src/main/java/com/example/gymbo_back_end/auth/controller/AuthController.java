@@ -13,6 +13,8 @@ import com.example.gymbo_back_end.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +49,16 @@ public class AuthController {
         TokenInfo tokenInfo = authService.reissueTokens(refreshToken, reissueTokensRequestDto);
 
         return tokenInfo;
+    }
+
+    @GetMapping("/member_info")
+    @ResponseBody
+    public String getUserInfo(@AuthenticationPrincipal UserDetails userDetails){
+        if(userDetails!=null){
+            System.out.println("로그인 된 상태입니다.");
+            return userDetails.getUsername();
+        }
+        return "확인 불가";
     }
 
 }

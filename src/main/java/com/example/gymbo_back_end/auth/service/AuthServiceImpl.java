@@ -69,6 +69,7 @@ public class AuthServiceImpl implements AuthService{
             // 3. 인증 정보를 기반으로 JWT 토큰 생성
             TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
 
+            //4. 리프레쉬 토큰 저장
             member.setRefreshToken(tokenInfo.getRefreshToken());
 
             return Optional.ofNullable(tokenInfo);
