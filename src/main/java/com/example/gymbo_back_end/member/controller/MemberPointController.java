@@ -30,6 +30,7 @@ public class MemberPointController {
     @PostMapping("/point_save")
     public ResponseEntity<ResBodyModel> memberPointSave(@RequestBody MemberPointRequestDto memberPointRequestDto) {
 
+
         MemberPoint memberPoint = memberPointService.memberPointSave(memberPointRequestDto);
         ResponseMemberPointDto responseMemberPointDto = ResponseMemberPointDto.buildDto(memberPoint);
         return AetResponse.toResponse(SuccessCode.SUCCESS,responseMemberPointDto);

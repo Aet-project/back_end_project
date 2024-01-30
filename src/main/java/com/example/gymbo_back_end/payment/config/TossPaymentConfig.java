@@ -11,7 +11,6 @@ public class TossPaymentConfig {
     @Value("${payment.toss.test_client_api_key}")
     private String testClientApiKey;
 
-
     @Value("${payment.toss.test_secrete_api_key}")
     private String testSecretApiKey;
 
