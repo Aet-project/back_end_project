@@ -3,14 +3,14 @@ package com.example.gymbo_back_end.member.controller;
 import com.example.gymbo_back_end.core.commom.code.SuccessCode;
 import com.example.gymbo_back_end.core.commom.response.AetResponse;
 import com.example.gymbo_back_end.core.commom.response.model.ResBodyModel;
-import com.example.gymbo_back_end.auth.dto.AuthJoinRequestDto;
 import com.example.gymbo_back_end.core.entity.Member;
 import com.example.gymbo_back_end.core.entity.MemberPhoto;
-import com.example.gymbo_back_end.gym.dto.GymPhotoRequestDto;
+import com.example.gymbo_back_end.core.entity.MemberPoint;
 import com.example.gymbo_back_end.member.dto.MemberPhotoRequestDto;
 import com.example.gymbo_back_end.member.dto.MemberRequestDto;
 import com.example.gymbo_back_end.member.dto.response.ResponseMemberInfoDto;
-import com.example.gymbo_back_end.member.repository.MemberPhotoRepository;
+import com.example.gymbo_back_end.member.mapper.MemberMapper;
+import com.example.gymbo_back_end.member.service.MemberPointService;
 import com.example.gymbo_back_end.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/members")
@@ -36,7 +33,16 @@ import java.util.Map;
 public class MemberController {
 
     private final MemberService memberService;
-    private final MemberPhotoRepository memberPhotoRepository;
+    private final MemberPointService memberPointService;
+    private final MemberMapper mapper;
+
+    @GetMapping("login_view/{memberId}") //로그인시 단일 회원 조회
+    public ResponseEntity<ResBodyModel> loginViewRead(@PathVariable String memberId) {
+        Member member = memberService.find(memberId);
+        Optional<MemberPoint> optionalMemberPointFind = memberPointService.optionalMemberPointFind(memberId);
+        ResponseMemberInfoDto responseMemberInfoDto = mapper.toResponse(optionalMemberPointFind, member);
+        return AetResponse.toResponse(SuccessCode.SUCCESS, responseMemberInfoDto);
+    }
 
     @GetMapping("/{memberId}") //단일 회원 조회
     public ResponseEntity<ResBodyModel> read(@PathVariable String memberId) {
@@ -51,12 +57,7 @@ public class MemberController {
     @GetMapping()//전체 회원 조회
     public ResponseEntity<ResBodyModel> readAll() {
         List<Member> members = memberService.findAll();
-
-        List<ResponseMemberInfoDto> responseMemberInfoDtos = new ArrayList<>();
-        for (Member member : members) {
-            responseMemberInfoDtos.add(ResponseMemberInfoDto.buildDto(member));
-        }
-
+        List<ResponseMemberInfoDto> responseMemberInfoDtos = mapper.toResponse(members);
         return AetResponse.toResponse(SuccessCode.SUCCESS, responseMemberInfoDtos);
 
     }
@@ -64,8 +65,8 @@ public class MemberController {
     @PatchMapping() //회원 정보 수정
     public ResponseEntity<ResBodyModel> update(@RequestBody MemberRequestDto requestMemberJoinDto) {
         Member member = memberService.update(requestMemberJoinDto);
-        ResponseMemberInfoDto responseMemberInfoDto = ResponseMemberInfoDto.buildDto(member);
-
+        Optional<MemberPoint> optionalMemberPointFind = memberPointService.optionalMemberPointFind(member.getMemberId());
+        ResponseMemberInfoDto responseMemberInfoDto = mapper.toResponse(optionalMemberPointFind, member);
         return AetResponse.toResponse(SuccessCode.SUCCESS, responseMemberInfoDto);
     }
 
@@ -95,7 +96,7 @@ public class MemberController {
         List<MemberPhoto> memberPhoto = memberService.findMemberPhoto(member.getMemberSeq());
 
         for (MemberPhoto photo : memberPhoto) {
-            memberPhotoRepository.delete(photo);
+           memberService.memberPhotoDelete(photo);
         }
 
         List<MemberPhoto> memberPhotos = memberService.saveMemberPhoto(memberPhotoRequestDto,files);

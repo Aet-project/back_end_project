@@ -14,16 +14,20 @@ public class ResponseMemberInfoDto {
     private String memberId;
     private String nickName;
 
+    private Long point;
+
     @Builder
-    public ResponseMemberInfoDto(String memberId, String nickName) {
+    public ResponseMemberInfoDto(String memberId, String nickName,Long point) {
         this.memberId = memberId;
         this.nickName = nickName;
+        this.point = point;
     }
 
-    public static ResponseMemberInfoDto buildDto (Member member) {
+    public static ResponseMemberInfoDto buildDto (Member member,Long point) {
         return ResponseMemberInfoDto.builder()
                 .memberId(member.getMemberId())
                 .nickName(member.getNickName())
+                .point(point)
                 .build();
     }
 }

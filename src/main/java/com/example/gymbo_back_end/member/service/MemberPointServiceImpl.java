@@ -5,7 +5,6 @@ import com.example.gymbo_back_end.core.entity.MemberPoint;
 import com.example.gymbo_back_end.member.dao.MemberDao;
 import com.example.gymbo_back_end.member.dao.MemberPointDao;
 import com.example.gymbo_back_end.member.dto.MemberPointRequestDto;
-import com.example.gymbo_back_end.member.repository.MemberPointRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -57,6 +56,16 @@ public class MemberPointServiceImpl implements MemberPointService{
         Member member = memberDao.findByMemberId(memberId);
         MemberPoint memberPoint = memberPointDao.memberPointFind(member);
         return memberPoint;
+    }
+
+    /**
+     * 로그인이 회원 조회 로직
+     * */
+    @Override
+    public Optional<MemberPoint> optionalMemberPointFind(String memberId) {
+        Member member = memberDao.findByMemberId(memberId);
+        Optional<MemberPoint> optionalMemberPointFind = memberPointDao.optionalMemberPointFind(member);
+        return optionalMemberPointFind;
     }
 
     /**
