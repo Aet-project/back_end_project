@@ -10,20 +10,16 @@ import com.example.gymbo_back_end.member.dto.MemberPhotoRequestDto;
 import com.example.gymbo_back_end.member.dto.MemberRequestDto;
 import com.example.gymbo_back_end.member.dto.response.ResponseMemberInfoDto;
 import com.example.gymbo_back_end.member.mapper.MemberMapper;
+import com.example.gymbo_back_end.member.mapper.MemberPhotoMapper;
 import com.example.gymbo_back_end.member.service.MemberPointService;
 import com.example.gymbo_back_end.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.*;
 
 @RestController
@@ -34,30 +30,31 @@ public class MemberController {
 
     private final MemberService memberService;
     private final MemberPointService memberPointService;
-    private final MemberMapper mapper;
+    private final MemberMapper memberMapper;
+    private final MemberPhotoMapper memberPhotoMapper;
 
     @GetMapping("login_view/{memberId}") //로그인시 단일 회원 조회
     public ResponseEntity<ResBodyModel> loginViewRead(@PathVariable String memberId) {
         Member member = memberService.find(memberId);
         Optional<MemberPoint> optionalMemberPointFind = memberPointService.optionalMemberPointFind(memberId);
-        ResponseMemberInfoDto responseMemberInfoDto = mapper.toResponse(optionalMemberPointFind, member);
+        ResponseMemberInfoDto responseMemberInfoDto = memberMapper.toResponse(optionalMemberPointFind, member);
         return AetResponse.toResponse(SuccessCode.SUCCESS, responseMemberInfoDto);
     }
 
-    @GetMapping("/{memberId}") //단일 회원 조회
-    public ResponseEntity<ResBodyModel> read(@PathVariable String memberId) {
-        Member member = memberService.find(memberId);
-        ResponseMemberInfoDto responseMemberInfoDto = ResponseMemberInfoDto.builder()
-                .memberId(member.getMemberId())
-                .nickName(member.getNickName())
-                .build();
-        return AetResponse.toResponse(SuccessCode.SUCCESS, responseMemberInfoDto);
-    }
+//    @GetMapping("/{memberId}") //단일 회원 조회
+//    public ResponseEntity<ResBodyModel> read(@PathVariable String memberId) {
+//        Member member = memberService.find(memberId);
+//        ResponseMemberInfoDto responseMemberInfoDto = ResponseMemberInfoDto.builder()
+//                .memberId(member.getMemberId())
+//                .nickName(member.getNickName())
+//                .build();
+//        return AetResponse.toResponse(SuccessCode.SUCCESS, responseMemberInfoDto);
+//    }
 
     @GetMapping()//전체 회원 조회
     public ResponseEntity<ResBodyModel> readAll() {
         List<Member> members = memberService.findAll();
-        List<ResponseMemberInfoDto> responseMemberInfoDtos = mapper.toResponse(members);
+        List<ResponseMemberInfoDto> responseMemberInfoDtos = memberMapper.toResponse(members);
         return AetResponse.toResponse(SuccessCode.SUCCESS, responseMemberInfoDtos);
 
     }
@@ -66,7 +63,7 @@ public class MemberController {
     public ResponseEntity<ResBodyModel> update(@RequestBody MemberRequestDto requestMemberJoinDto) {
         Member member = memberService.update(requestMemberJoinDto);
         Optional<MemberPoint> optionalMemberPointFind = memberPointService.optionalMemberPointFind(member.getMemberId());
-        ResponseMemberInfoDto responseMemberInfoDto = mapper.toResponse(optionalMemberPointFind, member);
+        ResponseMemberInfoDto responseMemberInfoDto = memberMapper.toResponse(optionalMemberPointFind, member);
         return AetResponse.toResponse(SuccessCode.SUCCESS, responseMemberInfoDto);
     }
 
@@ -84,7 +81,6 @@ public class MemberController {
     @PostMapping("/file_save")// 회원 프로필 저장
     public ResponseEntity<ResBodyModel> memberPhotoSave(@RequestPart(required = false)  List<MultipartFile> files
             ,@RequestPart MemberPhotoRequestDto memberPhotoRequestDto) throws Exception {
-
         List<MemberPhoto> memberPhotos = memberService.saveMemberPhoto(memberPhotoRequestDto,files);
         return AetResponse.toResponse(SuccessCode.SUCCESS,memberPhotos);
     }
@@ -103,33 +99,11 @@ public class MemberController {
         return AetResponse.toResponse(SuccessCode.SUCCESS,memberPhotos);
     }
 
-    @GetMapping(value = "/file_find/{memberSeq}",produces = {MediaType.APPLICATION_JSON_VALUE}) // 회원 프로필 조회
+    // 회원 프로필 조회
+    @GetMapping(value = "/file_find/{memberSeq}",produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResBodyModel> memberPhotoFind(@PathVariable("memberSeq") Long memberSeq ) throws Exception {
         List<MemberPhoto> memberPhotos = memberService.findMemberPhoto(memberSeq);
-        List<Map<String,Object>> imageList = new ArrayList<>();
-
-        for (MemberPhoto memberPhoto : memberPhotos) {
-            String absolutePath = new File("").getAbsolutePath() + File.separator + File.separator;
-            String path = memberPhoto.getFilePath();
-            InputStream imageStream = new FileInputStream(absolutePath + path);
-            byte[] imageByteArray = IOUtils.toByteArray(imageStream);
-            imageStream.close();
-
-            String base64EncodedImage = Base64.encodeBase64String(imageByteArray);
-
-            Map<String, Object> imageInfo = new HashMap<>();
-            imageInfo.put("fileName",memberPhoto.getOrigFileName());
-            imageInfo.put("imageBytes",base64EncodedImage);
-            imageList.add(imageInfo);
-        }
-
-        return AetResponse.toResponse(SuccessCode.SUCCESS,imageList);
+        List<Map<String, Object>> response = memberPhotoMapper.toResponse(memberPhotos);
+        return AetResponse.toResponse(SuccessCode.SUCCESS,response);
     }
-
-    @PostMapping("/test")
-    public String test() {
-        return "success";
-    }
-
-
 }
