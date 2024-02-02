@@ -25,19 +25,17 @@ public class MemberMapper {
     public ResponseMemberInfoDto toResponse(Optional<MemberPoint> optionalMemberPointFind, Member member ) {
 
         if (optionalMemberPointFind.isPresent()) {
-            ResponseMemberInfoDto responseMemberInfoDto = ResponseMemberInfoDto.builder()
+            return ResponseMemberInfoDto.builder()
                     .memberId(member.getMemberId())
                     .nickName(member.getNickName())
                     .point(optionalMemberPointFind.get().getPoint())
                     .build();
-            return responseMemberInfoDto;
         } else {
-            ResponseMemberInfoDto responseMemberInfoDto = ResponseMemberInfoDto.builder()
+            return ResponseMemberInfoDto.builder()
                     .memberId(member.getMemberId())
                     .nickName(member.getNickName())
                     .point(null)
                     .build();
-            return responseMemberInfoDto;
         }
     }
 

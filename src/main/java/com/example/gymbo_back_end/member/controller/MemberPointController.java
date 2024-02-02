@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/members")
 public class MemberPointController {
 
-    private final MemberService memberService;
     private final MemberPointService memberPointService;
 
 
@@ -29,8 +28,6 @@ public class MemberPointController {
      * */
     @PostMapping("/point_save")
     public ResponseEntity<ResBodyModel> memberPointSave(@RequestBody MemberPointRequestDto memberPointRequestDto) {
-
-
         MemberPoint memberPoint = memberPointService.memberPointSave(memberPointRequestDto);
         ResponseMemberPointDto responseMemberPointDto = ResponseMemberPointDto.buildDto(memberPoint);
         return AetResponse.toResponse(SuccessCode.SUCCESS,responseMemberPointDto);
