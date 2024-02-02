@@ -5,11 +5,11 @@ import com.example.gymbo_back_end.core.entity.Gym;
 import com.example.gymbo_back_end.gym.repository.GymRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -44,4 +44,11 @@ public class JpaGymDao implements GymDao{
         Gym gym = gymRepository.findById(gymSeq).orElseThrow(() -> new GymNotFoundException("운동시설을 찾을 수 없습니다."));
         return gym;
     }
+
+    @Override
+    public Slice<Gym> findByGymNameContaining(String keyword, Pageable pageable) {
+        return gymRepository.findByGymNameContaining(keyword,pageable);
+    }
+
+
 }

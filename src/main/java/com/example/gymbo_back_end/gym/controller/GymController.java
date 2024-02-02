@@ -2,30 +2,28 @@ package com.example.gymbo_back_end.gym.controller;
 
 import com.example.gymbo_back_end.core.commom.code.SuccessCode;
 import com.example.gymbo_back_end.core.commom.response.AetResponse;
+import com.example.gymbo_back_end.core.commom.response.dto.SliceInfo;
 import com.example.gymbo_back_end.core.commom.response.model.ResBodyModel;
 import com.example.gymbo_back_end.core.entity.Gym;
 import com.example.gymbo_back_end.core.entity.GymPhoto;
-import com.example.gymbo_back_end.gym.dao.GymPhotoDao;
 import com.example.gymbo_back_end.gym.dto.GymPhotoRequestDto;
 import com.example.gymbo_back_end.gym.dto.GymResponseDto;
 import com.example.gymbo_back_end.gym.dto.GymSaveRequestDto;
-import com.example.gymbo_back_end.gym.repository.GymPhotoRepository;
+import com.example.gymbo_back_end.gym.dto.GymSearchResponseDto;
+import com.example.gymbo_back_end.gym.mapper.GymMapper;
 import com.example.gymbo_back_end.gym.service.GymPhotoService;
 import com.example.gymbo_back_end.gym.service.GymService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,20 +36,15 @@ public class GymController {
 
     private final GymService gymService;
     private final GymPhotoService gymPhotoService;
-    private final GymPhotoDao gymPhotoDao;
+    private final GymMapper gymMapper;
 
     /**
      * 운동시설 등록 localhost8080/gyms/save
      * */
     @PostMapping("/save")
     public ResponseEntity<ResBodyModel> gymRegistration(@RequestBody GymSaveRequestDto gymSaveRequestDto) {
-
-        log.info("gymSaveRequestDto ={}",gymSaveRequestDto);
-        log.info("gymSaveRequestDtoManNumber = {}",gymSaveRequestDto.getManagerNumber());
-
         Gym gym = gymService.save(gymSaveRequestDto);
         GymResponseDto gymResponseDto = GymResponseDto.buildDto(gym);
-
         return AetResponse.toResponse(SuccessCode.SUCCESS, gymResponseDto);
 
     }
@@ -60,8 +53,6 @@ public class GymController {
     public ResponseEntity<ResBodyModel> gymPhotoSave(@RequestPart(required = false)  List<MultipartFile> files
             ,@RequestPart GymPhotoRequestDto gymPhotoRequestDto ) throws Exception {
         List<GymPhoto> gymPhotos = gymPhotoService.saveGymPhoto(gymPhotoRequestDto, files);
-
-
 
         return AetResponse.toResponse(SuccessCode.SUCCESS,gymPhotos);
     }
@@ -75,7 +66,7 @@ public class GymController {
 
         List<GymPhoto> gymPhoto = gymPhotoService.findGymPhoto(gymPhotoRequestDto.getGymNumber());
         for (GymPhoto photo : gymPhoto) {
-            gymPhotoDao.delete(photo);
+            gymPhotoService.gymPhotoDelete(photo);
         }
 
         List<GymPhoto> gymPhotos = gymPhotoService.saveGymPhoto(gymPhotoRequestDto, files);
@@ -109,59 +100,24 @@ public class GymController {
     }
 
     /**
-     * 운동시설번호로 사진 조회
+     * 운동시설 seq로 사진 조회
      * */
     @GetMapping(value = "/files/{gym_seq}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResBodyModel> getAllImages(@PathVariable Long gym_seq) throws IOException {
         Gym gym = gymService.find(gym_seq);
-        List<GymPhoto> gymPhotos = gymPhotoDao.findGymPhotosByGym(gym);
-        List<Map<String, Object>> imageList = new ArrayList<>();
-
-        for (GymPhoto gymPhoto : gymPhotos) {
-
-            String absolutePath = new File("").getAbsolutePath() + File.separator + File.separator;
-            String path = gymPhoto.getFilePath();
-            InputStream imageStream = new FileInputStream(absolutePath + path);
-            byte[] imageByteArray = IOUtils.toByteArray(imageStream);
-            imageStream.close();
-
-            // 이미지 바이트 배열을 Base64로 인코딩하여 문자열로 변환
-            String base64EncodedImage = Base64.encodeBase64String(imageByteArray);
-
-            Map<String, Object> imageInfo = new HashMap<>();
-            imageInfo.put("fileName", gymPhoto.getOrigFileName());
-            imageInfo.put("imageBytes", base64EncodedImage);
-            imageList.add(imageInfo);
-        }
+        List<GymPhoto> gymPhotos = gymPhotoService.findGymPhoto(gym.getGymNumber());
+        List<Map<String, Object>> imageList = gymMapper.gymPhotoMapping(gymPhotos);
 
         return AetResponse.toResponse(SuccessCode.SUCCESS, imageList);
     }
 
     /**
-     * 운동시설 seq로 사진 조회
+     * 운동시설 번호로 사진 조회
      * */
     @PostMapping(value = "/files", produces = {MediaType.APPLICATION_JSON_VALUE}) //
     public ResponseEntity<ResBodyModel> getAllImages(@RequestBody GymPhotoRequestDto gymPhotoRequestDto) throws IOException {
-        Gym gym = gymService.findByGymNumber(gymPhotoRequestDto.getGymNumber());
-        List<GymPhoto> gymPhotos = gymPhotoDao.findGymPhotosByGym(gym);
-        List<Map<String, Object>> imageList = new ArrayList<>();
-
-        for (GymPhoto gymPhoto : gymPhotos) {
-
-            String absolutePath = new File("").getAbsolutePath() + File.separator + File.separator;
-            String path = gymPhoto.getFilePath();
-            InputStream imageStream = new FileInputStream(absolutePath + path);
-            byte[] imageByteArray = IOUtils.toByteArray(imageStream);
-            imageStream.close();
-
-            // 이미지 바이트 배열을 Base64로 인코딩하여 문자열로 변환
-            String base64EncodedImage = Base64.encodeBase64String(imageByteArray);
-
-            Map<String, Object> imageInfo = new HashMap<>();
-            imageInfo.put("fileName", gymPhoto.getOrigFileName());
-            imageInfo.put("imageBytes", base64EncodedImage);
-            imageList.add(imageInfo);
-        }
+        List<GymPhoto> gymPhotos = gymPhotoService.findGymPhoto(gymPhotoRequestDto.getGymNumber());
+        List<Map<String, Object>> imageList = gymMapper.gymPhotoMapping(gymPhotos);
 
         return AetResponse.toResponse(SuccessCode.SUCCESS, imageList);
     }
@@ -170,12 +126,14 @@ public class GymController {
      * 운동시설명으로 조회 localhost8080/gyms/서울유나이티드
      * */
     @GetMapping("/{gymName}")
-    public ResponseEntity<ResBodyModel> findByGymName ( @PathVariable String gymName) {
+    public ResponseEntity<ResBodyModel> findByGymName ( @PathVariable String gymName) throws IOException {
 
         log.info("gymName = {}",gymName);
 
         Gym gym = gymService.find(gymName);
-        GymResponseDto gymResponseDto = GymResponseDto.buildDto(gym);
+        List<GymPhoto> gymPhotos = gymPhotoService.findGymPhoto(gym.getGymNumber());
+        List<Map<String, Object>> imageList = gymMapper.gymPhotoMapping(gymPhotos);
+        GymResponseDto gymResponseDto = GymResponseDto.buildPhotoDto(gym,imageList);
 
         return AetResponse.toResponse(SuccessCode.SUCCESS,gymResponseDto);
 
@@ -185,27 +143,32 @@ public class GymController {
      * 운동시설 전체 조회
      * */
     @GetMapping("/all")
-    public ResponseEntity<ResBodyModel> findAllGym () {
-
+    public ResponseEntity<ResBodyModel> findAllGym () throws IOException {
         List<Gym> gyms = gymService.findAll();
-        List<GymResponseDto> gymResponseDtoList = new ArrayList<>();
-        for (Gym gym : gyms) {
-            GymResponseDto gymResponseDto = GymResponseDto.buildDto(gym);
-            gymResponseDtoList.add(gymResponseDto);
-        }
-
+        List<GymResponseDto> gymResponseDtoList = gymMapper.toResponse(gyms);
         return AetResponse.toResponse(SuccessCode.SUCCESS,gymResponseDtoList);
     }
 
     /**
-     * 운동시설 업데이트
+     * 운동시설 정보 업데이트
      * */
     @PatchMapping //운동시설 업데이트
-    private ResponseEntity<ResBodyModel> updateGym(@RequestBody GymSaveRequestDto gymSaveRequestDto) {
+    public ResponseEntity<ResBodyModel> updateGym(@RequestBody GymSaveRequestDto gymSaveRequestDto) {
         Gym gym = gymService.update(gymSaveRequestDto);
         GymResponseDto gymResponseDto = GymResponseDto.buildDto(gym);
         return AetResponse.toResponse(SuccessCode.SUCCESS,gymResponseDto);
 
+    }
+
+    /**
+     * 운동시설명으로 검색하는 컨트롤러
+     * */
+    @GetMapping("/search")
+    public ResponseEntity<ResBodyModel> searchGym(@RequestParam("keyword") String keyword, Pageable pageable) {
+        Slice<Gym> gyms = gymService.searchGym(keyword, pageable);
+        SliceInfo sliceInfo = new SliceInfo(pageable, gyms.getNumberOfElements(), gyms.hasNext());
+        List<GymSearchResponseDto> gymSearchResponseDtos = gymMapper.toResponse(gyms,sliceInfo);
+        return AetResponse.toResponse(SuccessCode.SUCCESS,gymSearchResponseDtos);
     }
 
 }

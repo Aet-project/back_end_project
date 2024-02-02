@@ -3,6 +3,8 @@ package com.example.gymbo_back_end.gym.service;
 import com.example.gymbo_back_end.core.commom.response.Address;
 import com.example.gymbo_back_end.core.entity.Gym;
 
+import com.example.gymbo_back_end.core.entity.Member;
+import com.example.gymbo_back_end.core.entity.Payment;
 import com.example.gymbo_back_end.gym.dao.GymDao;
 import com.example.gymbo_back_end.gym.dao.GymPhotoDao;
 
@@ -11,6 +13,10 @@ import com.example.gymbo_back_end.gym.handler.GymFileHandler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +41,6 @@ public class GymServiceImpl implements GymService {
         Address address = new Address(gymSaveRequestDto.getCity()
                 ,gymSaveRequestDto.getStreet()
                 ,gymSaveRequestDto.getZipCode());
-
 
         Gym gym = Gym.builder()
                 .gymName(gymSaveRequestDto.getGymName())
@@ -81,7 +86,6 @@ public class GymServiceImpl implements GymService {
     public Gym update(GymSaveRequestDto gymSaveRequestDto) {
         Gym gym = gymDao.findByGymNumber(gymSaveRequestDto.getGymNumber());
         gym.changeInfo(gymSaveRequestDto);
-
         return gym;
     }
 
@@ -90,8 +94,19 @@ public class GymServiceImpl implements GymService {
      * */
     @Override
     public Gym findByGymNumber(String gymNumber) {
-        Gym gym = gymDao.findByGymNumber(gymNumber);
-        return gym;
+        return gymDao.findByGymNumber(gymNumber);
+    }
+
+
+    /**
+     * 운동시설명으로 검색하는 서비스 로직
+     * */
+    @Override
+    public Slice<Gym> searchGym(String keyword, Pageable pageable) {
+        return gymDao.findByGymNameContaining(keyword,
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                        Sort.Direction.DESC,"gymSeq")
+        );
     }
 
 }

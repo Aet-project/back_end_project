@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+import java.util.Map;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,6 +25,8 @@ public class GymResponseDto {
 
     private String gymSports;
 
+    private List<Map<String, Object>> imageList;
+
 
     @Builder
     public GymResponseDto(String gymName, Address gymAddress, String gymNumber, String managerNumber,String gymSports) {
@@ -32,6 +37,7 @@ public class GymResponseDto {
         this.managerNumber = managerNumber;
     }
 
+
     public static GymResponseDto buildDto (Gym gym) {
        return GymResponseDto.builder()
                .gymAddress(gym.getGymAddress())
@@ -40,5 +46,15 @@ public class GymResponseDto {
                .gymName(gym.getGymName())
                .managerNumber(gym.getManagerNumber())
                .build();
+    }
+    public static GymResponseDto buildPhotoDto (Gym gym,List<Map<String, Object>> imageList) {
+        GymResponseDto gymResponseDto = new GymResponseDto();
+        gymResponseDto.setGymName(gym.getGymName());
+        gymResponseDto.setGymAddress(gym.getGymAddress());
+        gymResponseDto.setGymNumber(gym.getGymNumber());
+        gymResponseDto.setGymSports(gym.getGymSports());
+        gymResponseDto.setManagerNumber(gym.getManagerNumber());
+        gymResponseDto.setImageList(imageList);
+        return gymResponseDto;
     }
 }
