@@ -29,12 +29,13 @@ public class GymResponseDto {
 
 
     @Builder
-    public GymResponseDto(String gymName, Address gymAddress, String gymNumber, String managerNumber,String gymSports) {
+    public GymResponseDto(String gymName, Address gymAddress, String gymNumber, String managerNumber,String gymSports,List<Map<String, Object>> imageList) {
         this.gymName = gymName;
         this.gymSports = gymSports;
         this.gymAddress = gymAddress;
         this.gymNumber = gymNumber;
         this.managerNumber = managerNumber;
+        this.imageList = imageList;
     }
 
 

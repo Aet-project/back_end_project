@@ -14,7 +14,6 @@ import java.util.Map;
 public interface GymMapper {
 
     List<Map<String, Object>> gymPhotoMapping(List<GymPhoto> gymPhotos) throws IOException;
-
     List<GymResponseDto> toResponse(List<Gym> gyms) throws IOException;
     List<GymSearchResponseDto> toResponse(Slice<Gym> gyms, SliceInfo sliceInfo);
 }

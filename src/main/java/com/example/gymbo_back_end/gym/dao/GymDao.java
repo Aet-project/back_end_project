@@ -20,4 +20,6 @@ public interface GymDao {
     Gym find(Long gymSeq);
 
     Slice<Gym> findByGymNameContaining(String keyword, Pageable pageable);
+
+    Slice<Gym> findBySportsContaining(String keyword, Pageable pageable);
 }

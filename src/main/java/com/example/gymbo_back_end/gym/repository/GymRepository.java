@@ -17,4 +17,7 @@ public interface GymRepository extends JpaRepository<Gym,Long> {
 
     @Query("SELECT g FROM Gym g WHERE UPPER(g.gymName) LIKE UPPER(CONCAT('%', :keyword, '%'))")
     Slice<Gym> findByGymNameContaining(@Param("keyword") String keyword, Pageable pageable);
+
+    @Query("SELECT g FROM Gym g WHERE UPPER(g.gymSports) LIKE UPPER(CONCAT('%', :keyword, '%'))")
+    Slice<Gym> findByGymSportsContaining(@Param("keyword") String keyword, Pageable pageable);
 }

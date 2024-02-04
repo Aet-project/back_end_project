@@ -50,5 +50,10 @@ public class JpaGymDao implements GymDao{
         return gymRepository.findByGymNameContaining(keyword,pageable);
     }
 
+    @Override
+    public Slice<Gym> findBySportsContaining(String keyword, Pageable pageable) {
+        return gymRepository.findByGymSportsContaining(keyword,pageable);
+    }
+
 
 }

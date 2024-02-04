@@ -29,8 +29,6 @@ import java.util.List;
 public class GymServiceImpl implements GymService {
 
     private final GymDao gymDao;
-    private final GymPhotoDao gymPhotoDao;
-    private final GymFileHandler gymFileHandler;
 
     /**
      * 운동시설 저장 로직
@@ -102,8 +100,19 @@ public class GymServiceImpl implements GymService {
      * 운동시설명으로 검색하는 서비스 로직
      * */
     @Override
-    public Slice<Gym> searchGym(String keyword, Pageable pageable) {
+    public Slice<Gym> searchGymName(String keyword, Pageable pageable) {
         return gymDao.findByGymNameContaining(keyword,
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                        Sort.Direction.DESC,"gymSeq")
+        );
+    }
+
+    /**
+     * 운동시설명으로 검색하는 서비스 로직
+     * */
+    @Override
+    public Slice<Gym> searchGymSports(String keyword, Pageable pageable) {
+        return gymDao.findBySportsContaining(keyword,
                 PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
                         Sort.Direction.DESC,"gymSeq")
         );

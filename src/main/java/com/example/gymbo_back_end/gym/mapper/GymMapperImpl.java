@@ -64,13 +64,33 @@ public class GymMapperImpl implements GymMapper {
     @Override
     public List<GymResponseDto> toResponse(List<Gym> gyms) throws IOException {
         List<GymResponseDto> gymResponseDtoList = new ArrayList<>();
-        for (Gym gym : gyms) {
+        return gyms.stream().map(gym -> {
+
             List<GymPhoto> gymPhotos = gymPhotoService.findGymPhoto(gym.getGymNumber());
-            List<Map<String, Object>> imageList = gymPhotoMapping(gymPhotos);
-            GymResponseDto gymResponseDto = GymResponseDto.buildPhotoDto(gym,imageList);
-            gymResponseDtoList.add(gymResponseDto);
-        }
-        return gymResponseDtoList;
+            List<Map<String, Object>> imageList = null;
+            try {
+                imageList = gymPhotoMapping(gymPhotos);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return GymResponseDto.builder()
+                    .gymName(gym.getGymName())
+                    .managerNumber(gym.getManagerNumber())
+                    .gymSports(gym.getGymSports())
+                    .gymAddress(gym.getGymAddress())
+                    .imageList(imageList)
+                    .gymNumber(gym.getGymNumber())
+                    .build();
+        }).collect(Collectors.toList());
+
+//        List<GymResponseDto> gymResponseDtoList = new ArrayList<>();
+//        for (Gym gym : gyms) {
+//            List<GymPhoto> gymPhotos = gymPhotoService.findGymPhoto(gym.getGymNumber());
+//            List<Map<String, Object>> imageList = gymPhotoMapping(gymPhotos);
+//            GymResponseDto gymResponseDto = GymResponseDto.buildPhotoDto(gym,imageList);
+//            gymResponseDtoList.add(gymResponseDto);
+//        }
+//        return gymResponseDtoList;
     }
 
     /**
