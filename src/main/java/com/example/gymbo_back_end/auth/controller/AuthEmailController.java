@@ -12,7 +12,7 @@ import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/email")
+@RequestMapping("/v1/email")
 public class AuthEmailController {
 
     private final AuthEmailService authEmailService;

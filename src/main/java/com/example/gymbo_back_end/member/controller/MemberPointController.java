@@ -17,11 +17,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/members")
+@RequestMapping("/v1/members")
 public class MemberPointController {
 
     private final MemberPointService memberPointService;
-
 
     /**
      * 회원 포인트 충전 컨트롤러

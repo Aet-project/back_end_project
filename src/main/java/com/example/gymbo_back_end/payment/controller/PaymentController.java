@@ -27,7 +27,7 @@ import java.util.Map;
 
 @RestController
 @Validated
-@RequestMapping("/payments")
+@RequestMapping("/v1/payments")
 @RequiredArgsConstructor
 public class PaymentController {
 
@@ -39,7 +39,6 @@ public class PaymentController {
     public ResponseEntity<ResBodyModel> requestTossPayment(@AuthenticationPrincipal UserDetails principal, @RequestBody PaymentDto paymentReqDto) {
 
         Payment payment = paymentReqDto.toEntity();
-
         PaymentResDto paymentResDto = paymentService.requestTossPayment(payment, principal.getUsername()).toPaymentResDto();
 
         paymentResDto.setSuccessUrl(paymentReqDto.getYourSuccessUrl() == null ? tossPaymentConfig.getSuccessUrl() : paymentReqDto.getYourSuccessUrl());

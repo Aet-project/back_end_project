@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/v1/order")
 @RequiredArgsConstructor
 @Slf4j
 public class OrderController {

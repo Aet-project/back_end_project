@@ -29,7 +29,7 @@ import java.util.Map;
 
 @RestController
 @Slf4j
-@RequestMapping("/gyms")
+@RequestMapping("/v1/gyms")
 @RequiredArgsConstructor
 public class GymController {
 
@@ -39,7 +39,7 @@ public class GymController {
     private final GymMapper gymMapper;
 
     /**
-     * 운동시설 등록 localhost8080/gyms/save
+     * 운동시설 등록 localhost8080/v1/gyms/save
      * */
     @PostMapping("/save")
     public ResponseEntity<ResBodyModel> gymRegistration(@RequestBody GymSaveRequestDto gymSaveRequestDto) {
@@ -123,12 +123,10 @@ public class GymController {
     }
 
     /**
-     * 운동시설명으로 조회 localhost8080/gyms/서울유나이티드
+     * 운동시설명으로 조회 localhost8080/v1/gyms/서울유나이티드
      * */
     @GetMapping("/{gymName}")
     public ResponseEntity<ResBodyModel> findByGymName ( @PathVariable String gymName) throws IOException {
-
-        log.info("gymName = {}",gymName);
 
         Gym gym = gymService.find(gymName);
         List<GymPhoto> gymPhotos = gymPhotoService.findGymPhoto(gym.getGymNumber());
@@ -163,9 +161,20 @@ public class GymController {
     /**
      * 운동시설명으로 검색하는 컨트롤러
      * */
-    @GetMapping("/search")
-    public ResponseEntity<ResBodyModel> searchGym(@RequestParam("keyword") String keyword, Pageable pageable) {
-        Slice<Gym> gyms = gymService.searchGym(keyword, pageable);
+    @GetMapping("/search/gym_name")
+    public ResponseEntity<ResBodyModel> searchGymName(@RequestParam("keyword") String keyword, Pageable pageable) {
+        Slice<Gym> gyms = gymService.searchGymName(keyword, pageable);
+        SliceInfo sliceInfo = new SliceInfo(pageable, gyms.getNumberOfElements(), gyms.hasNext());
+        List<GymSearchResponseDto> gymSearchResponseDtos = gymMapper.toResponse(gyms,sliceInfo);
+        return AetResponse.toResponse(SuccessCode.SUCCESS,gymSearchResponseDtos);
+    }
+
+    /**
+     * 운동시설명으로 검색하는 컨트롤러
+     * */
+    @GetMapping("/search/gym_sports")
+    public ResponseEntity<ResBodyModel> searchGymSports(@RequestParam("keyword") String keyword, Pageable pageable) {
+        Slice<Gym> gyms = gymService.searchGymSports(keyword, pageable);
         SliceInfo sliceInfo = new SliceInfo(pageable, gyms.getNumberOfElements(), gyms.hasNext());
         List<GymSearchResponseDto> gymSearchResponseDtos = gymMapper.toResponse(gyms,sliceInfo);
         return AetResponse.toResponse(SuccessCode.SUCCESS,gymSearchResponseDtos);

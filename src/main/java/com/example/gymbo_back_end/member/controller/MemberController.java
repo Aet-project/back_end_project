@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.*;
 
 @RestController
-@RequestMapping("/members")
+@RequestMapping("/v1/members")
 @RequiredArgsConstructor
 @Slf4j
 public class MemberController {

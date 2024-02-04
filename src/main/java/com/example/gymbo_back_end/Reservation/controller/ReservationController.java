@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/reservation")
+@RequestMapping("/v1/reservation")
 public class ReservationController {
 
     private final ReservationService reservationService;

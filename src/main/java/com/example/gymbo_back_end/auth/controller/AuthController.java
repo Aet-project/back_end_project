@@ -23,7 +23,7 @@ import java.util.Collections;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/auth")
+@RequestMapping("/v1/auth")
 public class AuthController {
 
     private final AuthService authService;
