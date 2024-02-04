@@ -1,6 +1,7 @@
-package com.example.gymbo_back_end.member.service;
+package com.example.gymbo_back_end.auth.service;
 
 import com.example.gymbo_back_end.core.entity.Member;
+import com.example.gymbo_back_end.member.dao.MemberDao;
 import com.example.gymbo_back_end.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;

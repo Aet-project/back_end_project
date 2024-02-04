@@ -1,6 +1,7 @@
 package com.example.gymbo_back_end.core.entity;
 
-import com.example.gymbo_back_end.member.dto.RequestMemberJoinDto;
+import com.example.gymbo_back_end.auth.dto.AuthJoinRequestDto;
+import com.example.gymbo_back_end.member.dto.MemberRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,15 +45,23 @@ public class Member implements UserDetails {
     private Date joinDate;                // 가입 날짜
 
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
+
+    @Column(name = "refresh_token")
+    private String refreshToken;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     @Builder
@@ -62,9 +71,9 @@ public class Member implements UserDetails {
         this.nickName = nickName;
     }
 
-    public void changeInfo(RequestMemberJoinDto requestMemberJoinDto) {
-        this.memberId = requestMemberJoinDto.getMemberId();
-        this.nickName = requestMemberJoinDto.getNickName();
+    public void changeInfo(MemberRequestDto memberRequestDto) {
+        this.memberId = memberRequestDto.getMemberId();
+        this.nickName = memberRequestDto.getNickName();
     }
 
     @Override

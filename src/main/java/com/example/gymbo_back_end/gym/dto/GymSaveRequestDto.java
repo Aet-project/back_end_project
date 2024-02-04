@@ -17,6 +17,8 @@ public class GymSaveRequestDto {
 
     private Address gymAddress;
 
+    private String gymSports;
+
     private String gymNumber;
 
     private String managerNumber;

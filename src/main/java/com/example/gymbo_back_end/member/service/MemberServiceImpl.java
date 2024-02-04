@@ -1,26 +1,24 @@
 package com.example.gymbo_back_end.member.service;
 
+import com.example.gymbo_back_end.core.commom.exception.member.MemberIdAlreadyExistsException;
 import com.example.gymbo_back_end.core.entity.Member;
-import com.example.gymbo_back_end.jwt.JwtTokenProvider;
-import com.example.gymbo_back_end.jwt.TokenInfo;
-import com.example.gymbo_back_end.member.dao.JpaMemberDao;
-import com.example.gymbo_back_end.member.dto.RequestMemberJoinDto;
-import com.example.gymbo_back_end.member.dto.ResponseMemberInfoDto;
-import com.example.gymbo_back_end.member.repository.MemberRepository;
+import com.example.gymbo_back_end.core.entity.MemberPhoto;
+import com.example.gymbo_back_end.member.controller.MemberRoles;
+import com.example.gymbo_back_end.member.dao.MemberDao;
+import com.example.gymbo_back_end.auth.dto.AuthJoinRequestDto;
+import com.example.gymbo_back_end.member.dao.MemberPhotoDao;
+import com.example.gymbo_back_end.member.dto.MemberPhotoRequestDto;
+import com.example.gymbo_back_end.member.dto.MemberRequestDto;
+import com.example.gymbo_back_end.member.handler.MemberFileHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,76 +26,66 @@ import java.util.Optional;
 @Transactional
 public class MemberServiceImpl implements MemberService{
 
-    private final BCryptPasswordEncoder encoder;
-    private final JpaMemberDao jpaMemberDao;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final MemberDao memberDao;
+    private final MemberFileHandler memberFileHandler;
+    private final MemberPhotoDao memberPhotoDao;
 
-    @Override
-    public Member save(Member member) {
-
-        String encode = encoder.encode(member.getPassword());
-
-        Member saveMember = Member.builder()
-                .memberId(member.getMemberId())
-                .password(encode)
-                .nickName(member.getNickName())
-                .roles(Collections.singletonList("USER"))
-                .build();
-      return jpaMemberDao.save(saveMember);
-    }
-
-    @Transactional
-    public Optional<TokenInfo> login(String memberId, String password) {
-
-        Member member = jpaMemberDao.findByMemberId(memberId).orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
-
-
-        if (encoder.matches(password,member.getPassword())==true) { //비밀번호가 암호화된 비민번호와 일치한지 확인
-
-            // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
-            // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(memberId, member.getPassword());
-
-            // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
-            // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
-            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
-            // 3. 인증 정보를 기반으로 JWT 토큰 생성
-            TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
-
-            return Optional.ofNullable(tokenInfo);
-        } else {
-            return null;
-        }
+    @Override //단일 회원 조회
+    public Member find(String memberId) {
+        Member member = memberDao.findByMemberId(memberId);
+        return member;
     }
 
     @Override
-    public ResponseMemberInfoDto find(String memberId) {
-        Member member = jpaMemberDao.findByMemberId(memberId).orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
-        ResponseMemberInfoDto responseMemberInfoDto = ResponseMemberInfoDto.builder()
-                .memberId(member.getMemberId())
-                .nickName(member.getNickName())
-                .build();
-
-        return responseMemberInfoDto;
+    public Member find(Long memberSeq) {
+        return memberDao.find(memberSeq);
     }
 
     @Override
-    public List<ResponseMemberInfoDto> findAll() {
-        return jpaMemberDao.findAll();
+    public List<Member> findAll() {
+        return memberDao.findAll();
     }
 
     @Override
-    public ResponseMemberInfoDto update( RequestMemberJoinDto requestMemberJoinDto) {
-        Member member = jpaMemberDao.findByMemberId(requestMemberJoinDto.getMemberId())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 회원입니다."));
-        member.changeInfo(requestMemberJoinDto);
-       return ResponseMemberInfoDto.buildDto(member);
+    public Member update( MemberRequestDto memberRequestDto) {
+        Member member = memberDao.findByMemberId(memberRequestDto.getMemberId());
+        member.changeInfo(memberRequestDto);
+       return member;
     }
 
     @Override
     public void delete(String memberId) {
-        jpaMemberDao.delete(memberId);
+        memberDao.delete(memberId);
     }
+
+    @Override
+    public void delete(Long memberSeq) {
+        memberDao.delete(memberSeq);
+    }
+
+    @Override //회원 이미지 저장
+    public List<MemberPhoto> saveMemberPhoto(MemberPhotoRequestDto memberPhotoRequestDto,List<MultipartFile> files) throws Exception{
+
+        List<MemberPhoto> memberPhotos = memberFileHandler.parseFileInfo(files);
+        Member member = memberDao.findByMemberId(memberPhotoRequestDto.getMemberId());
+        for (MemberPhoto memberPhoto : memberPhotos) {
+            memberPhotoDao.saveMemberPhoto(memberPhoto);
+            memberPhoto.addMember(member);
+        }
+        return memberPhotos;
+    }
+
+    @Override // 회원 이미지 조회
+    public List<MemberPhoto> findMemberPhoto(Long memberSeq) {
+        Member member = memberDao.find(memberSeq);
+        List<MemberPhoto> memberPhotos = memberPhotoDao.findMemberPhotosByMember(member);
+        return memberPhotos;
+    }
+
+    @Override
+    public void memberPhotoDelete(MemberPhoto memberPhoto) {
+        memberPhotoDao.memberPhotoDelete(memberPhoto);
+    }
+
+
 }

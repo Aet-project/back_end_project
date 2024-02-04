@@ -1,25 +1,33 @@
 package com.example.gymbo_back_end.member.service;
 
 import com.example.gymbo_back_end.core.entity.Member;
-import com.example.gymbo_back_end.jwt.TokenInfo;
-import com.example.gymbo_back_end.member.dto.RequestMemberJoinDto;
-import com.example.gymbo_back_end.member.dto.ResponseMemberInfoDto;
+import com.example.gymbo_back_end.auth.dto.AuthJoinRequestDto;
+import com.example.gymbo_back_end.core.entity.MemberPhoto;
+import com.example.gymbo_back_end.member.dto.MemberPhotoRequestDto;
+import com.example.gymbo_back_end.member.dto.MemberRequestDto;
+import com.example.gymbo_back_end.member.dto.response.ResponseMemberInfoDto;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface MemberService {
 
-    Member save(Member member);
 
-    Optional<TokenInfo> login(String memberId, String password);
+    Member find(String userEmail);
 
-    ResponseMemberInfoDto find(String userEmail);
+    Member find(Long memberSeq);
 
-    List<ResponseMemberInfoDto> findAll();
+    List<Member> findAll();
 
-    ResponseMemberInfoDto update(RequestMemberJoinDto requestMemberJoinDto);
+    Member update(MemberRequestDto memberRequestDto);
 
     void delete(String memberId);
 
+    void delete(Long memberSeq);
+
+    List<MemberPhoto> saveMemberPhoto(MemberPhotoRequestDto memberPhotoRequestDto,List<MultipartFile> files) throws Exception;
+
+    List<MemberPhoto> findMemberPhoto(Long memberSeq);
+
+    void memberPhotoDelete(MemberPhoto memberPhoto);
 }

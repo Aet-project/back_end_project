@@ -3,9 +3,11 @@ package com.example.gymbo_back_end.sec;
 
 import com.example.gymbo_back_end.jwt.JwtAuthenticationFilter;
 import com.example.gymbo_back_end.jwt.JwtTokenProvider;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -28,11 +30,16 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/members/join").permitAll()
-                .antMatchers("/members/login").permitAll()
+                .antMatchers("/v1/**").permitAll()
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/payments/**").hasRole("USER")
+                .antMatchers("/email/**").permitAll()
                 .antMatchers("/members/**").permitAll()
                 .antMatchers("/orders/**").permitAll()
                 .antMatchers("/gyms/**").permitAll()
+                .antMatchers("/reservation/**").permitAll()
+                .antMatchers("/ticket/**").permitAll()
+                .antMatchers("/order/**").permitAll()
                 .antMatchers("/members/test").hasRole("USER")
                 .anyRequest().authenticated()
                 .and()
@@ -45,3 +52,4 @@ public class SecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }
+

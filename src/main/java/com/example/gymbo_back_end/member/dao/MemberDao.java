@@ -1,18 +1,23 @@
 package com.example.gymbo_back_end.member.dao;
 
 import com.example.gymbo_back_end.core.entity.Member;
-import com.example.gymbo_back_end.member.dto.ResponseMemberInfoDto;
+import com.example.gymbo_back_end.member.dto.response.ResponseMemberInfoDto;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface MemberDao {
 
     Member save(Member member);
 
-    Optional<Member> findByMemberId(String memberId);
+    Member findByMemberId(String memberId);
 
-    List<ResponseMemberInfoDto> findAll();
+    List<Member> findAll();
 
     void delete(String memberId) ;
+
+    void delete(Long memberSeq) ;
+
+    Member find(Long memberSeq);
+
+    Boolean existsByMemberId(String memberId);
 }

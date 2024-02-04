@@ -4,9 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum SuccessCode implements BodyCode {
-    SUCCESS( "PA01", "Done"),
-    WARING_PASSWD( "NTC01", "사용자 정보 업데이트가 필요합니다.");
-
+    SUCCESS( "PA01", "Done")
+    ;
     private final String code;
     private final String message;
 
