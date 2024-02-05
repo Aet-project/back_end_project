@@ -9,6 +9,7 @@ import com.example.gymbo_back_end.order.dto.FindOneResponseDto;
 import com.example.gymbo_back_end.order.dto.OrderRequestDto;
 import com.example.gymbo_back_end.order.dto.OrderResponseDto;
 import com.example.gymbo_back_end.order.dto.FindByMemberResponseDto;
+import com.example.gymbo_back_end.order.mapper.OrderMapper;
 import com.example.gymbo_back_end.order.service.OrderService;
 import com.example.gymbo_back_end.ticket.dto.DailyTicketDto;
 import com.example.gymbo_back_end.ticket.service.DailyTicketService;
@@ -29,6 +30,7 @@ public class OrderController {
     private final OrderService orderService;
     private final DailyTicketService dailyTicketService;
     private final OrderItemService orderItemService;
+    private final OrderMapper orderMapper;
 
     /**
      * 주문 저장
@@ -37,16 +39,8 @@ public class OrderController {
     public ResponseEntity<ResBodyModel> orderSave(@RequestBody OrderRequestDto orderRequestDto) {
 
         DailyTicket dailyTicket = dailyTicketService.createdForOrder(orderRequestDto);//티켓을 생성
-
-
-            DailyTicketDto dailyTicketDto = DailyTicketDto.builder()
-                    .dailyTicketPrice(dailyTicket.getDailyTicketPrice())
-                    .dailyTicketUse(dailyTicket.getDailyTicketUse())
-                    .ticketSeq(dailyTicket.getDailyTicketSeq())
-                    .build();
-
+        DailyTicketDto dailyTicketDto = orderMapper.toResponse(dailyTicket); //티멧 dto로 변환
         OrderResponseDto orderResponseDto = orderService.save(orderRequestDto, dailyTicketDto);
-
 
         return AetResponse.toResponse(SuccessCode.SUCCESS,orderResponseDto);
 
