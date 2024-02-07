@@ -39,9 +39,8 @@ public class OrderController {
     public ResponseEntity<ResBodyModel> orderSave(@RequestBody OrderRequestDto orderRequestDto) {
 
         DailyTicket dailyTicket = dailyTicketService.createdForOrder(orderRequestDto);//티켓을 생성
-        DailyTicketDto dailyTicketDto = orderMapper.toResponse(dailyTicket); //티멧 dto로 변환
+        DailyTicketDto dailyTicketDto = orderMapper.toResponse(dailyTicket); //티켓 dto로 변환
         OrderResponseDto orderResponseDto = orderService.save(orderRequestDto, dailyTicketDto);
-
         return AetResponse.toResponse(SuccessCode.SUCCESS,orderResponseDto);
 
     }
@@ -61,20 +60,8 @@ public class OrderController {
     @GetMapping("/member/{memberSeq}")
     public ResponseEntity<ResBodyModel> memberFindOrder(@PathVariable Long memberSeq){
         List<Order> orders = orderService.memberFindOrders(memberSeq);
-
-        List<FindByMemberResponseDto> ordersFindByMemberResponseDtoList = new ArrayList<>();
-        for (Order order : orders) {
-            List<OrderItem> orderItems = order.getOrderItems();
-
-            for (OrderItem orderItem : orderItems) {
-                DailyTicket dailyTicket = orderItem.getDailyTicket();
-                Reservation reservation = dailyTicket.getReservation();
-                Gym gym = dailyTicket.getGym();
-                FindByMemberResponseDto responseDto = FindByMemberResponseDto.buildDto(order,orderItem,reservation,dailyTicket,gym);
-                ordersFindByMemberResponseDtoList.add(responseDto);
-            }
-        }
-        return AetResponse.toResponse(SuccessCode.SUCCESS,ordersFindByMemberResponseDtoList);
+        List<FindByMemberResponseDto> response = orderMapper.toResponse(orders);
+        return AetResponse.toResponse(SuccessCode.SUCCESS,response);
     }
 
     /**
