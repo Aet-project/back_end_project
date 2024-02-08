@@ -70,17 +70,8 @@ public class OrderController {
     @GetMapping("/order_item/{orderSeq}")
     public ResponseEntity<ResBodyModel> orderItemFindOrder(@PathVariable Long orderSeq) {
         Order order = orderService.find(orderSeq);
-        List<FindByMemberResponseDto> ordersFindByMemberResponseDtoList = new ArrayList<>();
-        List<OrderItem> orderItemsByOrder = orderItemService.findOrderItemsByOrder(orderSeq);
-
-        for (OrderItem orderItem : orderItemsByOrder) {
-            DailyTicket dailyTicket = orderItem.getDailyTicket();
-            Reservation reservation = dailyTicket.getReservation();
-            Gym gym = dailyTicket.getGym();
-            FindByMemberResponseDto responseDto = FindByMemberResponseDto.buildDto(order,orderItem,reservation,dailyTicket,gym);
-            ordersFindByMemberResponseDtoList.add(responseDto);
-        }
-        return AetResponse.toResponse(SuccessCode.SUCCESS,ordersFindByMemberResponseDtoList);
+        List<FindByMemberResponseDto> response = orderMapper.toResponse(order);
+        return AetResponse.toResponse(SuccessCode.SUCCESS,response);
     }
 
 
