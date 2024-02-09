@@ -29,7 +29,6 @@ public class OrderController {
 
     private final OrderService orderService;
     private final DailyTicketService dailyTicketService;
-    private final OrderItemService orderItemService;
     private final OrderMapper orderMapper;
 
     /**

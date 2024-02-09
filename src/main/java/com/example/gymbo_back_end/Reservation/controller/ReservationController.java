@@ -40,11 +40,7 @@ public class ReservationController {
 
         String startTime = reservationFindStartTimeRequestDto.getStartTime();
         List<Reservation> reservationByStartTime = reservationService.findReservationByStartTime(startTime);
-        List<FindStartTimeResponseDto> responseDtoList = new ArrayList<>();
-        for (Reservation reservation : reservationByStartTime) {
-            FindStartTimeResponseDto responseDto = FindStartTimeResponseDto.buildDto(reservation);
-            responseDtoList.add(responseDto);
-        }
+        List<FindStartTimeResponseDto> responseDtoList = reservationMapper.toResponse(reservationByStartTime);
         return AetResponse.toResponse(SuccessCode.SUCCESS,responseDtoList);
     }
     @PostMapping("/gym_seq/start_day")//요청받은 gymSeq와 startDay를 통해 예약 현황 조회
