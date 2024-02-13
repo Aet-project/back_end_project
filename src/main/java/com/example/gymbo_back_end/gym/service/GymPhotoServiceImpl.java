@@ -45,24 +45,6 @@ public class GymPhotoServiceImpl implements GymPhotoService{
 
         return photoList;
     }
-//    @Override
-//    @Transactional
-//    public List<GymPhoto> updateGymPhoto(GymPhotoRequestDto gymPhotoRequestDto, List<MultipartFile> addFileList) throws Exception{
-//
-//        Gym gym = gymDao.findByGymNumber(gymPhotoRequestDto.getGymNumber());
-//        List<GymPhoto> photoList = gymFileHandler.parseFileInfo(addFileList);
-//
-//        // 파일이 존재할 때에만 처리
-//        if(!photoList.isEmpty()) {
-//            for(GymPhoto photo : photoList) {
-//                // 파일을 DB에 저장
-//                GymPhoto gymPhoto = gymPhotoDao.save(photo);
-//                gym.addPhoto(gymPhoto);
-//            }
-//        }
-//        return photoList;
-//    }
-
     /**
      * 운동 시설 사진 사업자 번호로 조회
      * */
