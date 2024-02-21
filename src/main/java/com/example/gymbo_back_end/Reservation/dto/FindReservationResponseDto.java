@@ -6,17 +6,18 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class FindStartTimeResponseDto {
+public class FindReservationResponseDto {
 
     private String gymName;
     private String startDay;
     private String startTime;
 
-    public static FindStartTimeResponseDto buildDto(Reservation reservation) {
-        FindStartTimeResponseDto reservationStartTimeResponseDto = new FindStartTimeResponseDto();
+    public static FindReservationResponseDto buildDto(Reservation reservation) {
+        FindReservationResponseDto reservationStartTimeResponseDto = new FindReservationResponseDto();
         reservationStartTimeResponseDto.setStartTime(reservation.getStartTime());
         reservationStartTimeResponseDto.setStartDay(reservation.getStartDay());
         reservationStartTimeResponseDto.setGymName(reservation.getGym().getGymName());
         return reservationStartTimeResponseDto;
     }
 }
+
