@@ -83,7 +83,7 @@ public class PaymentServiceImpl implements PaymentService{
     public Payment verifyPayment(String orderId, Long amount) {
         Payment payment = paymentDao.findByOrderId(orderId);
 
-        if (payment.getAmount() != amount) {
+        if (!payment.getAmount().equals(amount)) {
             throw new IllegalArgumentException(" 충전금액이 일치하지 않습니다.");
         }
         return payment;
@@ -106,7 +106,7 @@ public class PaymentServiceImpl implements PaymentService{
                     new HttpEntity<>(params, headers),
                     PaymentSuccessDto.class);
         } catch (Exception e) {
-            throw  new IllegalArgumentException("requestPaymentAccept 에러");
+            throw new IllegalArgumentException(" 충전금액이 일치하지 않습니다.");
         }
 
         return result;
