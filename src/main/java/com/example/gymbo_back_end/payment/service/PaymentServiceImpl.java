@@ -90,51 +90,6 @@ public class PaymentServiceImpl implements PaymentService{
         }
         return payment;
     }
-
-//    @Transactional
-//    public PaymentSuccessDto requestPaymentAccept(String paymentKey, String orderId, Long amount) throws JSONException {
-//        RestTemplate restTemplate = new RestTemplate();
-//
-//        HttpHeaders headers = getHeaders();
-//       JSONObject params = new JSONObject();//키/값 쌍을 문자열이 아닌 오브젝트로 보낼 수 있음
-//        params.put("orderId", orderId);
-//        params.put("amount", amount);
-//
-//        PaymentSuccessDto result = null;
-//        try { //post요청 (url , HTTP객체 ,응답 Dto)
-//
-//            log.info("결제 요청 전송 - orderId: {}, amount: {}, payment: {}", orderId, amount,paymentKey);
-//
-//            result = restTemplate.postForObject(TossPaymentConfig.URL + paymentKey,
-//                    new HttpEntity<>(params.toString(), headers),
-//                    PaymentSuccessDto.class);
-//
-//
-//
-//            // 응답 수신 후 값 기록
-//            log.info("결제 응답 수신: {}", result);
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//            throw new IllegalArgumentException(" 서버와 서버 통신 에러");
-//        }
-//        return result;
-//    }
-
-
-
-    private HttpHeaders getHeaders() {
-       HttpHeaders headers = new HttpHeaders();
-        String encodedAuthKey = new String(
-                Base64.getEncoder().encode((tossPaymentConfig.getTestSecretApiKey() + ":").getBytes(StandardCharsets.UTF_8)));
-
-
-        headers.setBasicAuth(encodedAuthKey);
-       // headers.add("Authorization", "Basic "+encodedAuthKey);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        return headers;
-    }
-
     @Transactional
     public PaymentSuccessDto requestPaymentAccept(String paymentKey, String orderId, Long amount) {
         RestTemplate restTemplate = new RestTemplate();
@@ -156,6 +111,21 @@ public class PaymentServiceImpl implements PaymentService{
 
         return result;
     }
+
+    private HttpHeaders getHeaders() {
+       HttpHeaders headers = new HttpHeaders();
+        String encodedAuthKey = new String(
+                Base64.getEncoder().encode((tossPaymentConfig.getTestSecretApiKey() + ":").getBytes(StandardCharsets.UTF_8)));
+
+
+        headers.setBasicAuth(encodedAuthKey);
+       // headers.add("Authorization", "Basic "+encodedAuthKey);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        return headers;
+    }
+
+
     @Transactional
     public void tossPaymentFail(String code, String message, String orderId) {
         Payment payment = paymentDao.findByOrderId(orderId);
@@ -169,7 +139,9 @@ public class PaymentServiceImpl implements PaymentService{
      * payment객체의 충전금액이 환불금액 이상인지 확인 후,
      *
      * 취소 여부와 취소 이유,를 바꿔준 후 환불금액만큼 차감해준 후 tossPaymentCancel()메서드로 넘겨줌
+     *
      * */
+
     @Transactional
     public Map cancelPaymentPoint(String userEmail, String paymentKey, String cancelReason) throws JSONException {
         Member member = memberDao.findByMemberId(userEmail);
