@@ -9,13 +9,11 @@ import com.example.gymbo_back_end.core.commom.response.model.ResBodyModel;
 import com.example.gymbo_back_end.core.entity.Gym;
 import com.example.gymbo_back_end.core.entity.Reservation;
 import com.example.gymbo_back_end.gym.service.GymService;
-import com.example.gymbo_back_end.ticket.service.DailyTicketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -31,7 +29,7 @@ public class ReservationController {
     public ResponseEntity<ResBodyModel> findReservationByStartDay(@RequestBody FindStartDayRequestDto reservationFindStartDayRequestDto){
         String startDay = reservationFindStartDayRequestDto.getStartDay();
         List<Reservation> reservationByStartDay = reservationService.findReservationByStartDay(startDay);
-        List<FindStartTimeResponseDto> responseDtoList = reservationMapper.toResponse(reservationByStartDay);
+        List<FindReservationResponseDto> responseDtoList = reservationMapper.toResponse(reservationByStartDay);
         return AetResponse.toResponse(SuccessCode.SUCCESS,responseDtoList);
     }
 
@@ -40,7 +38,7 @@ public class ReservationController {
 
         String startTime = reservationFindStartTimeRequestDto.getStartTime();
         List<Reservation> reservationByStartTime = reservationService.findReservationByStartTime(startTime);
-        List<FindStartTimeResponseDto> responseDtoList = reservationMapper.toResponse(reservationByStartTime);
+        List<FindReservationResponseDto> responseDtoList = reservationMapper.toResponse(reservationByStartTime);
         return AetResponse.toResponse(SuccessCode.SUCCESS,responseDtoList);
     }
     @PostMapping("/gym_seq/start_day")//요청받은 gymSeq와 startDay를 통해 예약 현황 조회
@@ -49,14 +47,9 @@ public class ReservationController {
         Gym gym = gymService.find(dto.getGymSeq());
         ReservationDto reservationDto = ReservationDto.buildDto(gym, dto.getStartDay());
         List<Reservation> reservationsByStartTimeAndGymList = reservationService.findReservationsByStartDayAndGym(reservationDto);
-        List<FindStartTimeResponseDto> reservationStartTimeResponseDtoList = new ArrayList<>();
+        List<FindReservationResponseDto> responseDtoList = reservationMapper.toResponse(reservationsByStartTimeAndGymList);
 
-        for (Reservation reservation : reservationsByStartTimeAndGymList) {
-            FindStartTimeResponseDto ResponseDto = FindStartTimeResponseDto.buildDto(reservation);
-            reservationStartTimeResponseDtoList.add(ResponseDto);
-        }
-
-        return AetResponse.toResponse(SuccessCode.SUCCESS,reservationStartTimeResponseDtoList);
+        return AetResponse.toResponse(SuccessCode.SUCCESS,responseDtoList);
     }
 
 }
