@@ -39,6 +39,7 @@ public class DailyTicket {
     @JoinColumn(name = "gym_seq")
     private Gym gym;
 
+
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "reservation_seq")
     private Reservation reservation;

@@ -41,15 +41,15 @@ public class MemberController {
         return AetResponse.toResponse(SuccessCode.SUCCESS, responseMemberInfoDto);
     }
 
-//    @GetMapping("/{memberId}") //단일 회원 조회
-//    public ResponseEntity<ResBodyModel> read(@PathVariable String memberId) {
-//        Member member = memberService.find(memberId);
-//        ResponseMemberInfoDto responseMemberInfoDto = ResponseMemberInfoDto.builder()
-//                .memberId(member.getMemberId())
-//                .nickName(member.getNickName())
-//                .build();
-//        return AetResponse.toResponse(SuccessCode.SUCCESS, responseMemberInfoDto);
-//    }
+    @GetMapping("/{memberId}") //단일 회원 조회
+    public ResponseEntity<ResBodyModel> read(@PathVariable String memberId) {
+        Member member = memberService.find(memberId);
+        ResponseMemberInfoDto responseMemberInfoDto = ResponseMemberInfoDto.builder()
+                .memberId(member.getMemberId())
+                .nickName(member.getNickName())
+                .build();
+        return AetResponse.toResponse(SuccessCode.SUCCESS, responseMemberInfoDto);
+    }
 
     @GetMapping()//전체 회원 조회
     public ResponseEntity<ResBodyModel> readAll() {
@@ -78,16 +78,19 @@ public class MemberController {
         memberService.delete(memberSeq);
         return AetResponse.toResponse(SuccessCode.SUCCESS);
     }
-    @PostMapping("/file_save")// 회원 프로필 저장
+    // 회원 프로필 저장
+    @PostMapping(value = "/file_save",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResBodyModel> memberPhotoSave(@RequestPart(required = false)  List<MultipartFile> files
-            ,@RequestPart MemberPhotoRequestDto memberPhotoRequestDto) throws Exception {
+            ,@RequestPart(required = false) MemberPhotoRequestDto memberPhotoRequestDto) throws Exception {
+        log.info("MemberPhotoRequest: {}",memberPhotoRequestDto.getMemberId());
         List<MemberPhoto> memberPhotos = memberService.saveMemberPhoto(memberPhotoRequestDto,files);
         return AetResponse.toResponse(SuccessCode.SUCCESS,memberPhotos);
     }
 
-    @PostMapping("/file_update")// 회원 프로필 수정
+    @PostMapping(value = "/file_update",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,MediaType.APPLICATION_JSON_VALUE})// 회원 프로필 수정
     public ResponseEntity<ResBodyModel> memberPhotoUpdate(@RequestPart(required = false)  List<MultipartFile> files
-            ,@RequestPart MemberPhotoRequestDto memberPhotoRequestDto) throws Exception {
+            ,@RequestPart(required = false) MemberPhotoRequestDto memberPhotoRequestDto) throws Exception {
+        log.info("MemberPhotoRequest: {}",memberPhotoRequestDto.getMemberId());
         Member member = memberService.find(memberPhotoRequestDto.getMemberId());
         List<MemberPhoto> memberPhoto = memberService.findMemberPhoto(member.getMemberSeq());
 
