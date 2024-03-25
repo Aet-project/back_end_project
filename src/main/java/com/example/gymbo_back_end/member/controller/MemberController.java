@@ -7,6 +7,7 @@ import com.example.gymbo_back_end.core.entity.Member;
 import com.example.gymbo_back_end.core.entity.MemberPhoto;
 import com.example.gymbo_back_end.core.entity.MemberPoint;
 import com.example.gymbo_back_end.member.dto.MemberPhotoRequestDto;
+import com.example.gymbo_back_end.member.dto.MemberPhotoTestDto;
 import com.example.gymbo_back_end.member.dto.MemberRequestDto;
 import com.example.gymbo_back_end.member.dto.response.ResponseMemberInfoDto;
 import com.example.gymbo_back_end.member.mapper.MemberMapper;
@@ -86,6 +87,17 @@ public class MemberController {
         List<MemberPhoto> memberPhotos = memberService.saveMemberPhoto(memberPhotoRequestDto,files);
         return AetResponse.toResponse(SuccessCode.SUCCESS,memberPhotos);
     }
+
+//    @PostMapping("/file_save")
+//    public ResponseEntity<ResBodyModel> memberPhotoSave(@ModelAttribute MemberPhotoTestDto memberPhotoRequestDto) throws Exception {
+//        log.info("MemberPhotoRequest_memberId: {}",memberPhotoRequestDto.getMemberId());
+//        log.info("MemberPhotoRequest_files: {}",memberPhotoRequestDto.getFiles());
+//        List<MultipartFile> files = memberPhotoRequestDto.getFiles();
+//        MemberPhotoRequestDto memberPhotoRequestDto1 = new MemberPhotoRequestDto();
+//        memberPhotoRequestDto1.setMemberId(memberPhotoRequestDto.getMemberId());
+//        List<MemberPhoto> memberPhotos = memberService.saveMemberPhoto(memberPhotoRequestDto1,files);
+//        return AetResponse.toResponse(SuccessCode.SUCCESS,memberPhotos);
+//    }
 
     @PostMapping(value = "/file_update",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,MediaType.APPLICATION_JSON_VALUE})// 회원 프로필 수정
     public ResponseEntity<ResBodyModel> memberPhotoUpdate(@RequestPart(required = false)  List<MultipartFile> files

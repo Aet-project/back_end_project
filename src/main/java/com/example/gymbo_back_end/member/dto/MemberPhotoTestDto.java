@@ -7,10 +7,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Getter
 @Setter
+@Getter
 @Data
-public class MemberPhotoRequestDto {
+public class MemberPhotoTestDto {
 
     private String memberId;
+
+    private List<MultipartFile> files;
 }
