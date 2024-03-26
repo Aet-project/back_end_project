@@ -56,9 +56,20 @@ public class OrderController {
     /**
      *  회원 seq 로 주문 조회
      * */
-    @GetMapping("/member/{memberSeq}")
+    @GetMapping("/memberSeq/{memberSeq}")
     public ResponseEntity<ResBodyModel> memberFindOrder(@PathVariable Long memberSeq){
         List<Order> orders = orderService.memberFindOrders(memberSeq);
+        List<FindByMemberResponseDto> response = orderMapper.toResponse(orders);
+        return AetResponse.toResponse(SuccessCode.SUCCESS,response);
+    }
+
+
+    /**
+     *  회원 아이디 로 주문 조회
+     * */
+    @GetMapping("/memberId/{memberId}")
+    public ResponseEntity<ResBodyModel> memberIdFindOrder(@PathVariable String memberId){
+        List<Order> orders = orderService.memberFindOrders(memberId);
         List<FindByMemberResponseDto> response = orderMapper.toResponse(orders);
         return AetResponse.toResponse(SuccessCode.SUCCESS,response);
     }

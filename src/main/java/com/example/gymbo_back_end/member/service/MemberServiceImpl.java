@@ -82,6 +82,13 @@ public class MemberServiceImpl implements MemberService{
         return memberPhotos;
     }
 
+    @Override // 회원 이미지 회원 아이디로 조회
+    public List<MemberPhoto> findMemberPhoto(String memberId) {
+        Member member = memberDao.findByMemberId(memberId);
+        List<MemberPhoto> memberPhotos = memberPhotoDao.findMemberPhotosByMember(member);
+        return memberPhotos;
+    }
+
     @Override
     public void memberPhotoDelete(MemberPhoto memberPhoto) {
         memberPhotoDao.memberPhotoDelete(memberPhoto);

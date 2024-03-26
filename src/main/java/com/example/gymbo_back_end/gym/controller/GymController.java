@@ -49,9 +49,9 @@ public class GymController {
 
     }
 
-    @PostMapping("/file_save") //운동시설 사진 등록
+    @PostMapping(value = "/file_save",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,MediaType.APPLICATION_JSON_VALUE}) //운동시설 사진 등록
     public ResponseEntity<ResBodyModel> gymPhotoSave(@RequestPart(required = false)  List<MultipartFile> files
-            ,@RequestPart GymPhotoRequestDto gymPhotoRequestDto ) throws Exception {
+            ,@RequestPart(required = false) GymPhotoRequestDto gymPhotoRequestDto ) throws Exception {
         List<GymPhoto> gymPhotos = gymPhotoService.saveGymPhoto(gymPhotoRequestDto, files);
 
         return AetResponse.toResponse(SuccessCode.SUCCESS,gymPhotos);
@@ -60,9 +60,9 @@ public class GymController {
     /**
      * 운동시설 사진 수정
      * */
-    @PostMapping("/file_update") // 운동 시설 사진 업데이트
+    @PostMapping(value = "/file_update",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,MediaType.APPLICATION_JSON_VALUE}) // 운동 시설 사진 업데이트
     public ResponseEntity<ResBodyModel> gymPhotoUpdate(@RequestPart(required = false) List<MultipartFile> files
-            ,@RequestPart GymPhotoRequestDto gymPhotoRequestDto) throws Exception {
+            ,@RequestPart(required = false) GymPhotoRequestDto gymPhotoRequestDto) throws Exception {
 
         List<GymPhoto> gymPhoto = gymPhotoService.findGymPhoto(gymPhotoRequestDto.getGymNumber());
         for (GymPhoto photo : gymPhoto) {
