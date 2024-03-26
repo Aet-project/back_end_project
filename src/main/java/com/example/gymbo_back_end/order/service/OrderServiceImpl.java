@@ -65,7 +65,7 @@ public class OrderServiceImpl implements OrderService{
         return orderDao.findOne(orderSeq);
     }
 
-    @Override //주문번호로 멤버 조회
+    @Override //주문 번호로 멤버 조회
     public FindOneResponseDto OrderFindMember(Long orderSeq) {
         Order order = orderDao.findOne(orderSeq);
         FindOneResponseDto orderFindOneResponseDto = FindOneResponseDto.buildDto(order);
@@ -73,14 +73,19 @@ public class OrderServiceImpl implements OrderService{
         return orderFindOneResponseDto;
     }
 
-    @Override// 멤버로 주문 조회
+    @Override// 멤버 seq 로 주문 조회
     public List<Order> memberFindOrders(Long memberSeq) {
         Member member = memberDao.find(memberSeq);
         List<Order> ordersByMember = orderDao.findOrdersByMember(member);
         return ordersByMember;
     }
 
-
-
-
+    @Override// 멤버 아이디 로 주문 조회
+    public List<Order> memberFindOrders(String memberId) {
+        Member member = memberDao.findByMemberId(memberId);
+        List<Order> ordersByMember = orderDao.findOrdersByMember(member);
+        return ordersByMember;
+    }
 }
+
+

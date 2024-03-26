@@ -19,4 +19,6 @@ public interface OrderService {
 
 
     List<Order> memberFindOrders(Long memberSeq);
+
+    List<Order> memberFindOrders(String memberId);
 }
