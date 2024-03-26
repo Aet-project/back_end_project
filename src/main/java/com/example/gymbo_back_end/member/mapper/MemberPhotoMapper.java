@@ -17,6 +17,7 @@ public class MemberPhotoMapper {
     public List<Map<String,Object>> toResponse(List<MemberPhoto> memberPhotos) throws IOException {
 
         List<Map<String,Object>> imageList = new ArrayList<>();
+
         for (MemberPhoto memberPhoto : memberPhotos) {
             String absolutePath = new File("").getAbsolutePath() + File.separator + File.separator;
             String path = memberPhoto.getFilePath();

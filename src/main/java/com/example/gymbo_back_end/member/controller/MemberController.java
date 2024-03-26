@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -39,10 +40,12 @@ public class MemberController {
      * 로그인시 단일 회원 조회
      * */
     @GetMapping("login_view/{memberId}")
-    public ResponseEntity<ResBodyModel> loginViewRead(@PathVariable String memberId) {
+    public ResponseEntity<ResBodyModel> loginViewRead(@PathVariable String memberId) throws IOException {
         Member member = memberService.find(memberId);
         Optional<MemberPoint> optionalMemberPointFind = memberPointService.optionalMemberPointFind(memberId);
-        ResponseMemberInfoDto responseMemberInfoDto = memberMapper.toResponse(optionalMemberPointFind, member);
+        List<MemberPhoto> memberPhoto = memberService.findMemberPhoto(memberId);
+        List<Map<String, Object>> memberPhotoMapping = memberPhotoMapper.toResponse(memberPhoto);
+        ResponseMemberInfoDto responseMemberInfoDto = memberMapper.toResponse(optionalMemberPointFind, member,memberPhotoMapping);
         return AetResponse.toResponse(SuccessCode.SUCCESS, responseMemberInfoDto);
     }
 

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -22,7 +23,29 @@ public class MemberMapper {
     /**
      * 로그인 시 필요한 응답 객체를 만들기 위한 로직
      * */
-    public ResponseMemberInfoDto toResponse(Optional<MemberPoint> optionalMemberPointFind, Member member ) {
+    public ResponseMemberInfoDto toResponse(Optional<MemberPoint> optionalMemberPointFind, Member member, List<Map<String, Object>> memberPhoto) {
+
+        if (optionalMemberPointFind.isPresent()) {
+            return ResponseMemberInfoDto.builder()
+                    .memberId(member.getMemberId())
+                    .nickName(member.getNickName())
+                    .point(optionalMemberPointFind.get().getPoint())
+                    .memberPhoto(memberPhoto)
+                    .build();
+        } else {
+            return ResponseMemberInfoDto.builder()
+                    .memberId(member.getMemberId())
+                    .nickName(member.getNickName())
+                    .point(null)
+                    .memberPhoto(memberPhoto)
+                    .build();
+        }
+    }
+
+    /**
+     * 로그인 시 필요한 응답 객체(프로필 사진 제외)를 만들기 위한 로직
+     * */
+    public ResponseMemberInfoDto toResponse(Optional<MemberPoint> optionalMemberPointFind, Member member) {
 
         if (optionalMemberPointFind.isPresent()) {
             return ResponseMemberInfoDto.builder()
