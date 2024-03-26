@@ -29,5 +29,7 @@ public interface MemberService {
 
     List<MemberPhoto> findMemberPhoto(Long memberSeq);
 
+    List<MemberPhoto> findMemberPhoto(String memberId);
+
     void memberPhotoDelete(MemberPhoto memberPhoto);
 }

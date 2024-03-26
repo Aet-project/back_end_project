@@ -34,7 +34,11 @@ public class MemberController {
     private final MemberMapper memberMapper;
     private final MemberPhotoMapper memberPhotoMapper;
 
-    @GetMapping("login_view/{memberId}") //로그인시 단일 회원 조회
+
+    /**
+     * 로그인시 단일 회원 조회
+     * */
+    @GetMapping("login_view/{memberId}")
     public ResponseEntity<ResBodyModel> loginViewRead(@PathVariable String memberId) {
         Member member = memberService.find(memberId);
         Optional<MemberPoint> optionalMemberPointFind = memberPointService.optionalMemberPointFind(memberId);
@@ -79,7 +83,9 @@ public class MemberController {
         memberService.delete(memberSeq);
         return AetResponse.toResponse(SuccessCode.SUCCESS);
     }
-    // 회원 프로필 저장
+    /**
+     * 회원 프로필 저장
+     * */
     @PostMapping(value = "/file_save",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResBodyModel> memberPhotoSave(@RequestPart(required = false)  List<MultipartFile> files
             ,@RequestPart(required = false) MemberPhotoRequestDto memberPhotoRequestDto) throws Exception {
@@ -99,6 +105,9 @@ public class MemberController {
 //        return AetResponse.toResponse(SuccessCode.SUCCESS,memberPhotos);
 //    }
 
+    /**
+     * 회원 프로필 update
+     * */
     @PostMapping(value = "/file_update",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,MediaType.APPLICATION_JSON_VALUE})// 회원 프로필 수정
     public ResponseEntity<ResBodyModel> memberPhotoUpdate(@RequestPart(required = false)  List<MultipartFile> files
             ,@RequestPart(required = false) MemberPhotoRequestDto memberPhotoRequestDto) throws Exception {
@@ -114,10 +123,22 @@ public class MemberController {
         return AetResponse.toResponse(SuccessCode.SUCCESS,memberPhotos);
     }
 
-    // 회원 프로필 조회
-    @GetMapping(value = "/file_find/{memberSeq}",produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<ResBodyModel> memberPhotoFind(@PathVariable("memberSeq") Long memberSeq ) throws Exception {
-        List<MemberPhoto> memberPhotos = memberService.findMemberPhoto(memberSeq);
+    /**
+     * 회원 프로필 seq로 조회
+     * */
+//    @GetMapping(value = "/file_find/{memberSeq}",produces = {MediaType.APPLICATION_JSON_VALUE})
+//    public ResponseEntity<ResBodyModel> memberPhotoFind(@PathVariable("memberSeq") Long memberSeq ) throws Exception {
+//        List<MemberPhoto> memberPhotos = memberService.findMemberPhoto(memberSeq);
+//        List<Map<String, Object>> response = memberPhotoMapper.toResponse(memberPhotos);
+//        return AetResponse.toResponse(SuccessCode.SUCCESS,response);
+//    }
+
+    /**
+     * 회원 프로필 회원 아이디로 조회
+     * */
+    @GetMapping(value = "/file_find/{memberId}",produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<ResBodyModel> memberPhotoFindByMemberId(@PathVariable("memberId") String memberId ) throws Exception {
+        List<MemberPhoto> memberPhotos = memberService.findMemberPhoto(memberId);
         List<Map<String, Object>> response = memberPhotoMapper.toResponse(memberPhotos);
         return AetResponse.toResponse(SuccessCode.SUCCESS,response);
     }
