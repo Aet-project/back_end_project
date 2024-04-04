@@ -36,7 +36,6 @@ public class OrderController {
      * */
     @PostMapping
     public ResponseEntity<ResBodyModel> orderSave(@RequestBody OrderRequestDto orderRequestDto) {
-
         DailyTicket dailyTicket = dailyTicketService.createdForOrder(orderRequestDto);//티켓을 생성
         DailyTicketDto dailyTicketDto = orderMapper.toResponse(dailyTicket); //티켓 dto로 변환
         OrderResponseDto orderResponseDto = orderService.save(orderRequestDto, dailyTicketDto);
