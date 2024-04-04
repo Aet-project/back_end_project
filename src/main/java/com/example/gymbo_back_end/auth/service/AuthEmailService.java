@@ -98,12 +98,12 @@ public class AuthEmailService {
         return codeFoundByEmail.equals(code);
     }
 
-    public String makeMemberId(String email) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        md.update(email.getBytes());
-        md.update(LocalDateTime.now().toString().getBytes());
-        return Arrays.toString(md.digest());
-    }
+//    public String makeMemberId(String email) throws NoSuchAlgorithmException {
+//        MessageDigest md = MessageDigest.getInstance("SHA-256");
+//        md.update(email.getBytes());
+//        md.update(LocalDateTime.now().toString().getBytes());
+//        return Arrays.toString(md.digest());
+//    }
 
 }
 

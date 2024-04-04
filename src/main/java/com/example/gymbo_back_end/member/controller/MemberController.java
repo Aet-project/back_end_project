@@ -92,7 +92,9 @@ public class MemberController {
     @PostMapping(value = "/file_save",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResBodyModel> memberPhotoSave(@RequestPart(required = false)  List<MultipartFile> files
             ,@RequestPart(required = false) MemberPhotoRequestDto memberPhotoRequestDto) throws Exception {
-        log.info("MemberPhotoRequest: {}",memberPhotoRequestDto.getMemberId());
+
+       log.info("MemberPhotoRequest: {}",memberPhotoRequestDto.getMemberId());
+
         List<MemberPhoto> memberPhotos = memberService.saveMemberPhoto(memberPhotoRequestDto,files);
         return AetResponse.toResponse(SuccessCode.SUCCESS,memberPhotos);
     }

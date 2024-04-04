@@ -15,4 +15,5 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
 
     @Query("SELECT o FROM Order o WHERE o.member = :member")
     List<Order> findOrdersByMember(@Param("member") Member member);
+
 }
