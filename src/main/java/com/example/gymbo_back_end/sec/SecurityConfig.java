@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .antMatchers("/v1/reservation/**").permitAll()
                 .antMatchers("/v1/ticket/**").permitAll()
                 .antMatchers("/v1/order/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
