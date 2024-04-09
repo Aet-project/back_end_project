@@ -12,4 +12,9 @@ public interface MemberPhotoRepository extends JpaRepository<MemberPhoto, Long> 
 
     @Query("SELECT mp FROM MemberPhoto mp WHERE mp.member = :member")
     List<MemberPhoto> findMemberPhotosByMember(@Param("member")Member member);
+
+
+//    @Query("SELECT mp FROM MemberPhoto mp join fetch mp.member WHERE mp.member = :member")
+//    List<MemberPhoto> findMemberPhotosByMember(@Param("member")Member member);
+
 }

@@ -1,5 +1,6 @@
 package com.example.gymbo_back_end.core.entity;
 
+import com.example.gymbo_back_end.order.code.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -36,15 +37,30 @@ public class Order {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "order_created_at")
     private Date createdAt;
+
+    @Column(name = "order_status")
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
     public void addOrderItem(OrderItem orderItem) {
         orderItems.add(orderItem);
         orderItem.setOrder(this);
     }
 
+
+
+    //==비즈니스 로직==//
     public static Order createdOrder(Member member,  OrderItem orderItem){
         Order order = new Order();
         order.setMember(member);
         order.addOrderItem(orderItem);
+        order.setOrderStatus(OrderStatus.ORDER);
         return order;
+    }
+
+
+    //==주문 취소 비즈니스 로직==//
+    public void cancel() {
+        this.setOrderStatus(OrderStatus.CANCEL);
     }
 }

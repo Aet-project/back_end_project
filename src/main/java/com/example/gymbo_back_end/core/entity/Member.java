@@ -39,6 +39,7 @@ public class Member implements UserDetails {
     private String nickName;
 
 
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "join_date")

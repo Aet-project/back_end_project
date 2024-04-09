@@ -11,10 +11,10 @@ import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    @Query("SELECT r FROM Reservation r WHERE r.startDay = :startDay")
+    @Query("SELECT r FROM Reservation r join fetch r.gym WHERE r.startDay = :startDay")
     List<Reservation> findReservationsByStartDay(@Param("startDay") String startDay);
 
-    @Query("SELECT r FROM Reservation r WHERE r.startTime = :startTime")
+    @Query("SELECT r FROM Reservation r join fetch r.gym WHERE r.startTime = :startTime")
     List<Reservation> findReservationsByStartTime(@Param("startTime") String startTime);
 
     @Query("SELECT r FROM Reservation r WHERE r.gym = :#{#dto.gym} AND r.startDay = :#{#dto.startDay}")

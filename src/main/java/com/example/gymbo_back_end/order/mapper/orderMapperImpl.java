@@ -16,9 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class orderMapperImpl implements OrderMapper{
 
-    private final OrderService orderService;
-    private final DailyTicketService dailyTicketService;
-    private final OrderItemService orderItemService;
+
+   // private final OrderItemService orderItemService;
 
     /**DailyTicket 객체를  DailyTicketDto로 변환*/
     public DailyTicketDto toResponse(DailyTicket dailyTicket) {
@@ -48,7 +47,7 @@ public class orderMapperImpl implements OrderMapper{
     @Override
     public List<FindByMemberResponseDto> toResponse(Order order) {
         List<FindByMemberResponseDto> ordersFindByMemberResponseDtoList = new ArrayList<>();
-        List<OrderItem> orderItemsByOrder = orderItemService.findOrderItemsByOrder(order.getOrderSeq());
+        List<OrderItem> orderItemsByOrder = order.getOrderItems();
 
         for (OrderItem orderItem : orderItemsByOrder) {
             DailyTicket dailyTicket = orderItem.getDailyTicket();

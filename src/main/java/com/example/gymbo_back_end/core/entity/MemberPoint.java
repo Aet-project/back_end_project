@@ -16,7 +16,7 @@ public class MemberPoint {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberPointSeq;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_seq")
     private Member member;
 

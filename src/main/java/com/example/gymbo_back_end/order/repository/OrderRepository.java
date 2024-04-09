@@ -13,7 +13,13 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order,Long> {
 
 
-    @Query("SELECT o FROM Order o WHERE o.member = :member")
+    @Query("SELECT o FROM Order o join fetch o.orderItems WHERE o.member = :member")
     List<Order> findOrdersByMember(@Param("member") Member member);
+
+/**
+ * 페치 조인 적용 전 로직
+ * */
+//    @Query("SELECT o FROM Order o WHERE o.member = :member")
+//    List<Order> findOrdersByMember(@Param("member") Member member);
 
 }
